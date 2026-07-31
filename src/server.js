@@ -13,6 +13,19 @@ import { getKoreanLawArticle } from "./lib/korean-law.js";
 import { screenParty, screeningProvenance, SCREENING_LIMITS } from "./lib/screening.js";
 import { assessEarJurisdiction } from "./rules/jurisdiction.js";
 import { assessCountryChartRequirement } from "./rules/country-chart.js";
+import { assessChinaExportControls } from "./rules/china.js";
+import {
+  CHINA_PROVENANCE,
+  INSTRUMENTS,
+  ANNOUNCEMENTS,
+  SUSPENSION,
+  EXTRATERRITORIAL_ROUTES,
+  NO61_END_USER_RULE,
+  CONTROLLED_RARE_EARTHS_IN_FORCE,
+  ENTITY_MECHANISMS,
+  KNOWN_DESIGNATIONS,
+  NOT_MODELLED
+} from "./data/china-export-control.js";
 import { datasetProvenance, checkFreshness, ALL_DATASET_IDS } from "./lib/provenance.js";
 
 // Read the version from package.json rather than repeating it. It was hardcoded
@@ -30,6 +43,9 @@ const OFFICIAL_SOURCES = {
   bisEarToc: "https://www.bis.gov/regulations/ear/table-of-contents",
   entityList: "https://www.bis.gov/entity-list",
   euDualUse: "https://eur-lex.europa.eu/eli/reg/2021/821/oj?locale=en",
+  chinaMofcom: "https://www.mofcom.gov.cn/",
+  chinaMofcomAnnouncements:
+    "https://www.mofcom.gov.cn/ — numbered announcements (公告) are the operative instruments for PRC export controls",
   koreaStrategicTrade: "https://www.motie.go.kr/",
   koreanLaw: "https://www.law.go.kr/DRF/ (Open API; requires a LAW_OC account id)"
 };
@@ -97,6 +113,41 @@ server.registerResource(
   })
 );
 
+server.registerResource(
+  "china-framework",
+  "export-controls://china-framework",
+  {
+    title: "PRC export-control framework reference",
+    description:
+      "The instrument register, the numbered MOFCOM announcement register with the November 2025 suspension, the Announcement No. 61 extraterritorial tests, the entity mechanisms and what this server does not hold for this regime. Held as a resource because it is constant, so assess_china_export_controls does not repeat it on every call.",
+    mimeType: "application/json"
+  },
+  async () => ({
+    contents: [
+      {
+        uri: "export-controls://china-framework",
+        mimeType: "application/json",
+        text: JSON.stringify(
+          {
+            provenance: CHINA_PROVENANCE,
+            instruments: INSTRUMENTS,
+            announcements: ANNOUNCEMENTS,
+            suspension: SUSPENSION,
+            extraterritorialRoutes: EXTRATERRITORIAL_ROUTES,
+            no61EndUserRule: NO61_END_USER_RULE,
+            controlledRareEarthsInForce: CONTROLLED_RARE_EARTHS_IN_FORCE,
+            entityMechanisms: ENTITY_MECHANISMS,
+            knownDesignations: KNOWN_DESIGNATIONS,
+            notModelled: NOT_MODELLED
+          },
+          null,
+          2
+        )
+      }
+    ]
+  })
+);
+
 server.registerTool(
   "regime_overview",
   {
@@ -150,6 +201,31 @@ server.registerTool(
         ],
         transactionRelevance:
           "Turns counterparty status into a contract-performance risk, including suspension, termination, and indemnity issues."
+      },
+      {
+        name: "People's Republic of China export controls (MOFCOM)",
+        coverageInThisServer: "partial",
+        modelledParts: [
+          "The instrument register: Export Control Law (2020-12-01), Regulations on Export Control of Dual-Use Items (2024-12-01), Unreliable Entity List Provisions, Blocking Rules, Anti-Foreign Sanctions Law, State Council Decree No. 835 (2026)",
+          "The numbered announcement register with live in-force or suspended status computed against a date, including the Announcement No. 70 of 2025 suspension of Nos. 55, 56, 57, 58, 61 and 62 until 2026-11-10",
+          "Announcement No. 18 of 2025, which is NOT suspended: seven medium and heavy rare earths in the listed forms",
+          "Announcement No. 61 of 2025 extraterritorial reach: the 0.1 percent Chinese-origin content floor, the Chinese-technology production route, Chinese origin, the military end-user prohibition and the 50 percent affiliates rule (assess_china_export_controls)"
+        ],
+        notModelledParts: [
+          "两用物项出口管制清单, the Export Control List for Dual-Use Items — not bundled, so this server cannot classify an item under Chinese export control. That is the Chinese equivalent of the ECCN question and is usually the first thing an exporter needs",
+          "管控名单, Unreliable Entity List and Malicious Entity List designations — no complete machine-readable list exists to bundle, so entity screening is not offered rather than offered badly",
+          "Catch-all controls on unlisted items, which turn on the exporter's knowledge",
+          "Licence procedure, general licences, documentation and review timelines",
+          "The separate military and nuclear item regimes",
+          "Article-level citations of the Export Control Law and the 2024 Regulations, which were not verified to the standard used elsewhere in this server and are therefore not asserted"
+        ],
+        whatThisServerActuallyDoes:
+          "Tells you which numbered announcements bear on a fact pattern, whether each is in force on a given date, and which of the Announcement No. 61 extraterritorial routes the stated facts meet. It classifies nothing and screens nobody.",
+        transactionRelevance:
+          "Binds non-Chinese parties directly. Announcement No. 61 requires a MOFCOM permit for a shipment between two points both outside China, and a 管控名单 designation prohibits suppliers in any country from providing the listed entity with Chinese-origin dual-use items. A Korean exporter with no Chinese entity and no U.S. nexus can be squarely inside this regime.",
+        dataVintageCaution:
+          "Hand-transcribed, not generated: MOFCOM publishes no versioned machine-readable text. The framework moved six times in the twelve months to July 2026 and the current suspension expires 2026-11-10, so this is the fastest-decaying dataset in this server and carries a 14-day staleness threshold.",
+        source: OFFICIAL_SOURCES.chinaMofcom
       },
       {
         name: "EU Regulation 2021/821 (dual-use)",
@@ -443,6 +519,66 @@ server.registerTool(
       ["screening-list"]
     );
   }
+);
+
+server.registerTool(
+  "assess_china_export_controls",
+  {
+    title: "Assess PRC export controls (MOFCOM)",
+    description:
+      "Identify Chinese export-control exposure under the Export Control Law, the 2024 Regulations on Export Control of Dual-Use Items, and the numbered MOFCOM announcements. Answers the question that decides most cases in this regime first: is the measure currently in force? Announcements Nos. 55, 56, 57, 58, 61 and 62 of 2025 are suspended by Announcement No. 70 of 2025 until 10 November 2026, while Announcement No. 18 of 2025 on seven medium and heavy rare earths is NOT suspended and still requires a licence. A fact pattern that meets a suspended test is reported as license_required_if_reactivated with the expiry date, because the instruments are not repealed. This regime binds non-Chinese parties directly: Announcement No. 61 requires a MOFCOM permit for a shipment between two points both outside China, on a 0.1 percent content floor, and a 管控名单 designation prohibits parties in ANY country from supplying the listed entity with Chinese-origin dual-use items. Do not carry a U.S. de minimis conclusion across; § 734.4 is a 25 or 10 percent ceiling you fall below to escape, while No. 61 is a 0.1 percent floor you rise above to be caught. This tool does NOT classify items and does NOT screen entities, because neither the Export Control List for Dual-Use Items nor any designation list is bundled.",
+    inputSchema: {
+      asOfDate: z
+        .string()
+        .optional()
+        .describe("ISO date to assess against, e.g. 2026-12-01. Defaults to today. Decides whether a suspended measure is operative."),
+      itemDescription: z
+        .string()
+        .optional()
+        .describe("Free-text item description. Scanned for the controlled rare-earth elements, in English or Chinese."),
+      itemCategory: z
+        .enum(["rare_earth", "rare_earth_technology", "lithium_battery", "graphite_anode", "other", "unknown"])
+        .default("unknown"),
+      rareEarthElements: z
+        .array(z.string())
+        .optional()
+        .describe("Rare-earth elements present, e.g. ['dysprosium','terbium']."),
+
+      itemOriginChina: z.boolean().optional().describe("Whether the item was originally produced in China. No. 61 § 1(c)."),
+      containsChineseOriginRareEarths: z.boolean().optional(),
+      chineseOriginRareEarthValuePercent: z
+        .number()
+        .optional()
+        .describe(
+          "Value of Chinese-origin rare earths as a percentage of item value. The No. 61 § 1(a) threshold is a 0.1 percent FLOOR, not a ceiling: 0.1 or more is caught."
+        ),
+      producedOutsideChinaUsingChineseRareEarthTechnology: z
+        .boolean()
+        .optional()
+        .describe("No. 61 § 1(b). The Chinese analogue of the Foreign Direct Product rules, with no percentage test."),
+      chineseRareEarthTechnologyTypes: z
+        .array(
+          z.enum([
+            "extraction",
+            "smelting_separation",
+            "metal_smelting",
+            "magnetic_material_manufacturing",
+            "secondary_resource_recycling"
+          ])
+        )
+        .optional(),
+
+      exportFromCountry: z.string().optional(),
+      exportToCountry: z.string().optional(),
+      endUserMilitary: z.boolean().optional().describe("No. 61 § 2: applications for foreign military users are in principle not permitted."),
+      counterpartyNames: z.array(z.string()).optional(),
+      counterpartyIsSubsidiaryOfListedEntity: z
+        .boolean()
+        .optional()
+        .describe("Whether a parent controlling 50 percent or more of shares is a listed user. No. 61 § 2 reaches such subsidiaries.")
+    }
+  },
+  async (input) => asJson(assessChinaExportControls(input), ["china-export-control"])
 );
 
 server.registerTool(

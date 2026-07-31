@@ -16,6 +16,7 @@ const LICENCE_CATALOG = require("../data/license-exception-catalog.json");
 const CCL = require("../data/ccl.json");
 const SCREENING = require("../data/screening-list.json");
 const { FDP_PROVENANCE } = require("../data/fdp-rules.js");
+const { CHINA_PROVENANCE } = require("../data/china-export-control.js");
 
 /** Snapshots older than this many days are reported as stale. */
 export const STALE_AFTER_DAYS = 30;
@@ -25,6 +26,13 @@ export const STALE_AFTER_DAYS = 30;
  * the screening snapshot gets its own much shorter threshold.
  */
 export const SCREENING_STALE_AFTER_DAYS = 7;
+
+/**
+ * The PRC framework moved six times in the twelve months to July 2026, and the
+ * November 2025 suspension carries a fixed expiry. A month-old transcription of
+ * this regime is not usable, so it gets a 14-day threshold.
+ */
+export const CHINA_STALE_AFTER_DAYS = 14;
 
 const DATASETS = [
   {
@@ -81,6 +89,22 @@ const DATASETS = [
     handTranscribed: true,
     note: FDP_PROVENANCE.transcribedNotParsed,
     rebuildCommand: "node scripts/validate-fdp-rules.mjs (validates; does not regenerate)"
+  },
+  {
+    // Also not a generated snapshot, and for a harder reason: MOFCOM publishes no
+    // versioned machine-readable text at all. There is no issue-date index to
+    // compare against, so staleness is measured from the transcription date and
+    // the drift check is a validator rather than a rebuild.
+    id: "china-export-control",
+    citation: CHINA_PROVENANCE.citation,
+    ecfrIssueDate: null,
+    sourceGeneratedAt: CHINA_PROVENANCE.asOfDate,
+    retrievedAt: `${CHINA_PROVENANCE.asOfDate}T00:00:00.000Z`,
+    sourceUrl: CHINA_PROVENANCE.officialSource,
+    handTranscribed: true,
+    note: CHINA_PROVENANCE.transcribedNotParsed,
+    staleAfterDays: CHINA_STALE_AFTER_DAYS,
+    rebuildCommand: "node scripts/validate-china.mjs (validates; cannot regenerate)"
   }
 ];
 

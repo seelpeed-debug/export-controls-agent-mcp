@@ -60,6 +60,19 @@ t("R2", /\*\*Modelled\*\*/.test(readme) && /\*\*Not modelled\*\*/.test(readme), 
     /General Prohibitions Four through Ten|736/.test(notModelledBlock),
     "the README must disclose that an absent chart mark is not clearance"
   );
+  // PRC: something is modelled, so it must appear in the Modelled half, and the
+  // two absences must appear in the Not modelled half.
+  t("R7a", /MOFCOM|PRC|China/.test(modelledBlock), "the PRC regime is claimed under Modelled");
+  t(
+    "R7b",
+    /两用物项出口管制清单|Chinese control list|Export Control List for Dual-Use Items/.test(notModelledBlock),
+    "the absence of the Chinese control list is disclosed in the README"
+  );
+  t(
+    "R7c",
+    /管控名单|Chinese designation|Unreliable Entity List/.test(notModelledBlock),
+    "the absence of Chinese designation screening is disclosed in the README"
+  );
 }
 {
   // package.json description must not put EU beside the EAR as if modelled.
@@ -144,6 +157,55 @@ const byName = (frag) => payload.regimes.find((r) => r.name.includes(frag));
     "T14",
     !/Article 19 strategic items designation/.test(touchpoints),
     "the pre-2024 flat reference to Article 19 is gone"
+  );
+}
+{
+  // The PRC regime is the easiest place in this server to overclaim, because it
+  // has a tool and real analysis but holds neither the control list nor any
+  // designation list. Both absences have to stay visible.
+  const cn = byName("People's Republic of China");
+  t("CN1", Boolean(cn), "PRC regime present in regime_overview");
+  t("CN2", cn.coverageInThisServer === "partial", `coverage=${cn.coverageInThisServer}`);
+  t(
+    "CN3",
+    cn.modelledParts.some((p) => /No\. 18 of 2025/.test(p)),
+    "the in-force rare-earth announcement is claimed as modelled"
+  );
+  t(
+    "CN4",
+    cn.modelledParts.some((p) => /No\. 61 of 2025/.test(p) && /0\.1 percent/.test(p)),
+    "the No. 61 extraterritorial reach and its 0.1 percent floor are claimed"
+  );
+  t(
+    "CN5",
+    cn.modelledParts.some((p) => /suspend/i.test(p) && /2026-11-10/.test(p)),
+    "the suspension and its expiry are claimed as modelled"
+  );
+  t(
+    "CN6",
+    cn.notModelledParts.some((p) => /两用物项出口管制清单|Export Control List for Dual-Use Items/.test(p)),
+    "the absence of the Chinese control list must be disclosed"
+  );
+  t(
+    "CN7",
+    cn.notModelledParts.some((p) => /管控名单/.test(p) && /not offered/i.test(p)),
+    "the absence of designation screening must be disclosed"
+  );
+  t(
+    "CN8",
+    cn.notModelledParts.some((p) => /[Aa]rticle-level citations/.test(p)),
+    "the deliberate omission of unverified article numbers must be disclosed"
+  );
+  t("CN9", Boolean(cn.whatThisServerActuallyDoes), "must state what it actually does");
+  t(
+    "CN10",
+    /binds non-Chinese parties|any country/i.test(cn.transactionRelevance ?? ""),
+    "relevance must say the regime reaches non-Chinese parties"
+  );
+  t(
+    "CN11",
+    /[Hh]and-transcribed/.test(cn.dataVintageCaution ?? "") && /2026-11-10/.test(cn.dataVintageCaution ?? ""),
+    "the vintage caution must disclose hand transcription and the expiry"
   );
 }
 {

@@ -417,6 +417,59 @@ await call("T12.21", "determine_license_requirement", {}, true);
 // The exception tool must now carry the licence determination with it.
 await call("T12.22", "analyze_license_exceptions", { eccn: "1C010.a", destinationCountry: "Japan" });
 
+// --- T13: PRC export controls (MOFCOM) ------------------------------------
+// Announcement No. 18 of 2025 is in force; Nos. 55-58, 61 and 62 are suspended
+// until 2026-11-10. Both facts have to survive a round trip.
+await call("T13.1", "assess_china_export_controls", {
+  itemDescription: "sintered NdFeB permanent magnet containing dysprosium and terbium",
+  itemCategory: "rare_earth"
+});
+// The 0.1 percent floor, which runs the opposite way to EAR de minimis.
+await call("T13.2", "assess_china_export_controls", {
+  containsChineseOriginRareEarths: true,
+  chineseOriginRareEarthValuePercent: 0.4,
+  exportFromCountry: "Korea, South",
+  exportToCountry: "Vietnam"
+});
+await call("T13.3", "assess_china_export_controls", {
+  containsChineseOriginRareEarths: true,
+  chineseOriginRareEarthValuePercent: 0.05
+});
+// A percentage that comfortably clears US de minimis is caught here.
+await call("T13.4", "assess_china_export_controls", {
+  containsChineseOriginRareEarths: true,
+  chineseOriginRareEarthValuePercent: 20
+});
+// The FDP analogue.
+await call("T13.5", "assess_china_export_controls", {
+  producedOutsideChinaUsingChineseRareEarthTechnology: true,
+  chineseRareEarthTechnologyTypes: ["magnetic_material_manufacturing"]
+});
+// Same facts after the suspension expires: the answer must flip to operative.
+await call("T13.6", "assess_china_export_controls", {
+  asOfDate: "2026-12-01",
+  producedOutsideChinaUsingChineseRareEarthTechnology: true
+});
+// Battery supply chain, which is Announcement No. 58.
+await call("T13.7", "assess_china_export_controls", {
+  itemCategory: "lithium_battery",
+  exportFromCountry: "Korea, South",
+  exportToCountry: "Poland"
+});
+// Technology transfer, which is Announcement No. 62.
+await call("T13.8", "assess_china_export_controls", { itemCategory: "rare_earth_technology" });
+// Military end user and the 50 percent affiliates rule.
+await call("T13.9", "assess_china_export_controls", {
+  endUserMilitary: true,
+  counterpartyIsSubsidiaryOfListedEntity: true
+});
+// A matched name must not clear the unmatched one alongside it.
+await call("T13.10", "assess_china_export_controls", {
+  counterpartyNames: ["Rheinmetall AG", "Some Unlisted GmbH"]
+});
+await call("T13.11", "assess_china_export_controls", {});
+await call("T13.12", "assess_china_export_controls", { itemCategory: "not-a-category" }, true);
+
 await client.close();
 
 const outPath = path.join(here, "verification-report.json");

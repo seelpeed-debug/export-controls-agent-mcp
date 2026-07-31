@@ -1,5 +1,107 @@
 # Changelog
 
+## 0.4.0 — 2026-07-31
+
+Adds the PRC export-control regime. Until now this server covered the rules that
+reach a Korean exporter from Washington. It now also covers the ones that reach
+them from Beijing, which for a magnet or battery supply chain are frequently the
+binding constraint.
+
+### Added
+
+**`assess_china_export_controls`** — the Export Control Law, the 2024 Regulations
+on Export Control of Dual-Use Items, and the numbered MOFCOM announcements.
+
+Three things make this regime behave unlike the EAR, and each one shaped the
+tool.
+
+**The operative question is usually whether a measure is in force.** Announcements
+Nos. 55, 56, 57, 58, 61 and 62 of 2025 are suspended by Announcement No. 70 of
+2025 until **10 November 2026**. Announcement No. 18 of 2025, covering seven
+medium and heavy rare earths, is **not** suspended and still requires a licence.
+A reader who has heard that "China suspended its rare-earth controls" is wrong
+about those seven elements. Status is computed against a date, and a fact pattern
+that meets a suspended test returns `license_required_if_reactivated` with the
+expiry, because the instruments are not repealed. Pass `asOfDate` to test a
+future date and the answers flip.
+
+There is a subtlety the date arithmetic surfaced. The suspension took effect on 7
+November 2025 — one day before Announcement No. 61's own commencement date, and
+three weeks before its extraterritorial provisions were due on 1 December 2025.
+Those limbs have therefore never operated. That is a reason to plan for them, not
+to discount them: there is no enforcement history to reason from, only the text
+that will apply on revival.
+
+**It binds non-Chinese parties directly.** Announcement No. 61 requires a MOFCOM
+permit for a shipment where both ends are outside China. A 管控名单 designation
+prohibits parties in *any* country from supplying the listed entity with
+Chinese-origin dual-use items. A Korean exporter with no Chinese entity and no
+U.S. nexus can be squarely inside this regime, and the tool says so when both
+ends of a shipment are outside China.
+
+**Its content test runs the opposite way to EAR de minimis.**
+
+| | EAR § 734.4 | MOFCOM No. 61 § 1(a) |
+| --- | --- | --- |
+| Threshold | 25 percent, or 10 percent for the strictest destinations | 0.1 percent |
+| Direction | a **ceiling** you fall below to escape | a **floor** you rise above to be caught |
+
+Clearing U.S. de minimis at 20 percent says nothing about the Chinese test, which
+is between 100 and 250 times stricter. The tool refuses to carry a conclusion
+across and says why.
+
+The other limbs mirror provisions a reader of this server will recognise. § 1(b)
+is a Foreign Direct Product analogue reached from the other direction, catching
+items produced abroad using Chinese rare-earth extraction, smelting separation,
+metal smelting, magnetic material manufacturing or recycling technology, with no
+percentage test. § 2 carries a 50 percent affiliates rule and makes applications
+for military end users impermissible in principle.
+
+**`export-controls://china-framework`** holds the instrument register, the
+announcement register, the suspension and the entity mechanisms, so the tool does
+not repeat them on every call.
+
+### What is deliberately absent
+
+Two things, and they are the two an exporter usually wants most:
+
+- **两用物项出口管制清单**, the Export Control List for Dual-Use Items, is not
+  bundled. The tool classifies nothing. That is the Chinese equivalent of the
+  ECCN question.
+- **管控名单, the Unreliable Entity List and the Malicious Entity List** are not
+  bundled. No complete machine-readable list is published in a form that can be
+  kept current, so screening is not offered rather than offered badly. A handful
+  of designations that happened to be reported in accessible sources is recorded,
+  but a name that produces no match has **not** been checked, and the tool returns
+  `not_screenable` and names the unchecked counterparties.
+
+Article numbers of the Export Control Law and the 2024 Regulations are also
+deliberately not asserted. They could not be verified to the standard the rest of
+this server uses, and a wrong article number is the defect class 0.2.0 was spent
+removing. Instruments are cited by name and effective date, announcements by
+number and date. A validator check fails if anyone adds an unverified article
+citation later.
+
+### Fixed — a false-permissive path in the new code, caught by its own tests
+
+The first implementation raised the "these counterparties were not screened"
+question only when *nothing* matched. So in a request naming two parties where one
+matched a recorded designation, the other rode along behind it and read as
+cleared. A match on one name says nothing about the others, and the question is
+now raised for every unmatched name individually.
+
+### Changed
+
+The PRC transcription carries a **14-day** staleness threshold, the shortest of
+any dataset here apart from the screening list. MOFCOM publishes no versioned
+machine-readable text, the framework moved six times in the twelve months to July
+2026, and the current suspension has a fixed expiry.
+
+Because the dataset cannot be rebuilt, `npm run validate:china` converts its decay
+into a failure instead: once the suspension expiry passes, the validator fails
+until a human re-reads MOFCOM, on the grounds that from that moment every "not
+currently required" answer about Announcements 55 to 62 is wrong.
+
 ## 0.3.0 — 2026-07-31
 
 Models the Commerce Country Chart, so the server now answers the question it

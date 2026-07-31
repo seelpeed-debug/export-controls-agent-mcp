@@ -17,11 +17,14 @@ The line between what is modelled from the regulation text and what is merely fl
 | End-use / end-user | Part 744, including the 50 percent affiliates rule |
 | Commerce Control List | Part 774 Supplement No. 1, text search over all 633 entries |
 | Restricted parties | U.S. Consolidated Screening List, 25,921 parties across 12 lists |
+| PRC (MOFCOM) | Instrument and numbered-announcement register with live in-force or suspended status, Announcement No. 18 of 2025 rare earths, and the Announcement No. 61 of 2025 extraterritorial reach |
 | Korean statutes | 대외무역법 and 국제사법, full current article text |
 
 **Not modelled** — the server holds no data and performs no analysis; it only raises these as issues to check:
 
 - **General Prohibitions Four through Ten (Part 736).** This matters directly to the Country Chart result. Under § 738.4(a)(2)(ii)(B), an absent mark means no licence is required *only if* those prohibitions do not apply and the entry does not refer you elsewhere. A `no_chart_requirement` answer is therefore never clearance.
+- **两用物项出口管制清单, the Chinese Export Control List for Dual-Use Items.** Not bundled, so the server cannot classify an item under Chinese export control. That is the Chinese equivalent of the ECCN question and is usually an exporter's first one.
+- **管控名单, the Unreliable Entity List and the Malicious Entity List.** No complete machine-readable list is published in a form that can be bundled and kept current, so Chinese entity screening is not offered rather than offered badly. A name that produces no match has not been checked.
 - **EU Regulation 2021/821.** Annex I is not bundled. The server flags that an EU touchpoint exists and reminds you to review the Regulation. It cannot classify an item under EU law or analyse EU authorisations.
 - **전략물자수출입고시, the Korean control list.** The statute text is bundled; the control list is not. So the server cannot tell you whether an item is a 전략물자, which is usually a Korean exporter's first question. Use the KOSTI 전략물자관리시스템 or apply for a 전문판정 under Article 20.
 - **Part 742 licence requirements, Part 746 embargoes, Parts 748/758/762/764.** Cited where relevant, not evaluated.
@@ -61,6 +64,7 @@ The server bundles dated snapshots of the regulation text rather than hardcoded 
 | Commerce Control List (Part 774, Supp. No. 1) | eCFR XML | `npm run data:ccl` |
 | Consolidated Screening List (25,921 parties, 12 lists) | trade.gov bulk download, no API key | `npm run data:screening` |
 | § 734.9 FDP rule scopes (13 rules) | transcribed from eCFR | `npm run validate:fdp` (validates, does not regenerate) |
+| PRC framework, announcement register and No. 61 tests | transcribed from MOFCOM announcements | `npm run validate:china` (validates, cannot regenerate) |
 | 대외무역법 / 국제사법 full text | law.go.kr Open API | `npm run data:korean-law` |
 
 Rebuild the EAR datasets together with `npm run data:rebuild`, which finishes by running the validators.
@@ -70,7 +74,9 @@ Two properties worth knowing:
 - Each builder asserts facts verified against the regulation and refuses to write a dataset that fails them, so a change in the upstream document structure fails loudly instead of silently producing wrong compliance data. The Country Chart builder refuses outright if the 16 column identifiers change, because every rule in the CCL names them by string.
 - A builder that finds nothing substantively changed leaves the file alone rather than bumping its `retrievedAt` stamp. That keeps the git history meaningful: a commit touching `src/data/` means the regulation moved, not merely that someone re-ran the script. Pass `--force` to rewrite regardless.
 
-The screening snapshot has its own, much shorter staleness threshold of **7 days**, because restricted-party lists change by Federal Register notice rather than by quarterly amendment. The other snapshots use 30 days.
+The screening snapshot has its own, much shorter staleness threshold of **7 days**, because restricted-party lists change by Federal Register notice rather than by quarterly amendment. The PRC transcription uses **14 days**: MOFCOM publishes no versioned text, the framework moved six times in the twelve months to July 2026, and the current suspension carries a fixed expiry. The other snapshots use 30 days.
+
+The PRC dataset cannot be rebuilt. There is no versioned machine-readable source — MOFCOM publishes numbered announcements as individual pages with no index and no diff mechanism — so `validate:china` instead converts the decay into a failure: once the suspension expiry passes, the validator fails until a human re-reads MOFCOM and updates the transcription.
 
 Check whether the snapshots have fallen behind:
 
@@ -167,6 +173,31 @@ Lists Part 744 issues: military end use (§ 744.21) including the 50 percent aff
 
 Screens `endUser` and `additionalParties` against the Consolidated Screening List automatically, and reports a strong hit as a blocking issue with its licence requirement. It still blocks on incomplete screening, because one name is not a transaction and ownership is not in the list.
 
+### `assess_china_export_controls`
+
+Chinese export controls under the Export Control Law, the 2024 Regulations on Export Control of Dual-Use Items, and the numbered MOFCOM announcements.
+
+This regime differs from the EAR in three ways that shape the tool.
+
+**The operative question is usually whether a measure is in force, not what it says.** Announcements Nos. 55, 56, 57, 58, 61 and 62 of 2025 are suspended by Announcement No. 70 of 2025 until **10 November 2026**. Announcement No. 18 of 2025, covering seven medium and heavy rare earths, is **not** suspended and still requires a licence. So status is computed against a date, and a fact pattern that meets a suspended test returns `license_required_if_reactivated` with the expiry, because the instruments are not repealed. Suspension is not an exemption. Pass `asOfDate` to test a future date.
+
+A detail worth knowing: the suspension took effect on 7 November 2025, one day before Announcement No. 61's own commencement date and three weeks before its extraterritorial provisions were due. Those limbs have never operated, so there is no enforcement history to reason from — only the text that will apply on revival.
+
+**It binds non-Chinese parties directly.** Announcement No. 61 requires a MOFCOM permit for a shipment where both ends are outside China, and a 管控名单 designation prohibits parties in *any* country from supplying the listed entity with Chinese-origin dual-use items. A Korean exporter with no Chinese entity and no U.S. nexus can be squarely inside this regime.
+
+**Its content test runs the opposite way to EAR de minimis.**
+
+| | EAR § 734.4 | MOFCOM Announcement No. 61 § 1(a) |
+| --- | --- | --- |
+| Threshold | 25 percent, or 10 percent for the strictest destinations | 0.1 percent |
+| Direction | a **ceiling** you fall below to escape | a **floor** you rise above to be caught |
+
+Clearing U.S. de minimis at 20 percent says nothing about this test. The tool refuses to carry a conclusion across.
+
+Announcement No. 61's other limbs mirror provisions you will recognise: § 1(b) is a Foreign Direct Product analogue reached from the other direction, catching items produced abroad using Chinese rare-earth extraction, smelting separation, metal smelting, magnetic material manufacturing or recycling technology, with no percentage test. § 2 carries a 50 percent affiliates rule and makes applications for military end users impermissible in principle.
+
+The tool does **not** classify items and does **not** screen entities, because neither list is bundled. Every answer says so.
+
 ### `determine_license_requirement`
 
 Works the Commerce Country Chart for an ECCN and a destination, following § 738.4(a)(2). Reads every Reason for Control in the entry and resolves each one to a chart column or to the prose destination scope the entry states instead. Only 1260 of the 1545 License Requirements rows in the CCL name a column; the rest say things like "To or within any destination worldwide" or "To or within Macau or a destination specified in Country Group D:5", so a column-only reading would return nothing for 3A090 and for 3B001.c.
@@ -212,6 +243,7 @@ Compares the bundled snapshots against the latest eCFR issue date and reports wh
 
 - `export-controls://official-sources` — canonical official source links
 - `export-controls://data-provenance` — bundled snapshot vintage and rebuild commands
+- `export-controls://china-framework` — the PRC instrument and announcement register, the November 2025 suspension, the Announcement No. 61 tests and the entity mechanisms. Held as a resource because it is constant, so the tool does not repeat it on every call
 
 ## Publishing a change
 
@@ -252,17 +284,18 @@ A commit touching `src/data/` should mean the regulation actually moved. The bui
 npm test
 ```
 
-Nine suites, covering term matching and negation, the Part 738 chart determination, the Part 740 and Part 744 gating logic, § 734 jurisdiction, CCL search behaviour, screening, the risk and clause tiering, Korean statute retrieval, and the honesty of the coverage claims in this README and in `regime_overview`.
+Ten suites, covering term matching and negation, the Part 738 chart determination, the Part 740 and Part 744 gating logic, § 734 jurisdiction, CCL search behaviour, screening, the PRC framework and its suspension arithmetic, the risk and clause tiering, Korean statute retrieval, and the honesty of the coverage claims in this README and in `regime_overview`.
 
 ```powershell
 npm run validate
 ```
 
-Three validators, which check assumptions no snapshot can catch:
+Four validators, which check assumptions no snapshot can catch:
 
 - `validate:vocabulary` asserts every regulation-side search term actually occurs in the bundled CCL, so a search key that would silently return nothing fails instead.
 - `validate:fdp` re-reads § 734.9 and confirms the thirteen hand-transcribed rule scopes still match the section.
-- `validate:country-chart` confirms every prose destination scope the chart evaluator recognises still appears in the CCL. This is the one that matters most: if BIS rewords a scope such as "To or within any destination worldwide", the pattern stops matching, the affected rows quietly become unreadable, and the tool silently stops reporting a licence requirement it used to catch. It also pins the number of unreadable rows, which may fall but not rise, and re-reads § 738.3 and § 738.4 against the live eCFR.
+- `validate:country-chart` confirms every prose destination scope the chart evaluator recognises still appears in the CCL. This is the one that matters most for the EAR: if BIS rewords a scope such as "To or within any destination worldwide", the pattern stops matching, the affected rows quietly become unreadable, and the tool silently stops reporting a licence requirement it used to catch. It also pins the number of unreadable rows, which may fall but not rise, and re-reads § 738.3 and § 738.4 against the live eCFR.
+- `validate:china` fails once the MOFCOM suspension expiry passes, because from that moment every "not currently required" answer about Announcements 55 to 62 is wrong until someone re-reads the source. It also checks the internal cross-references of a hand-transcribed dataset and enforces the honesty invariants: the designation list must keep declaring itself incomplete, a matched counterparty name must not suppress the unscreened question for the others, the 0.1 percent test must stay marked as a floor, and no unverified article number may be added.
 
 ## Limitations
 
