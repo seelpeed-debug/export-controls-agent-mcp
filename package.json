@@ -1,7 +1,7 @@
 {
   "name": "export-controls-agent-mcp",
   "version": "0.4.0",
-  "description": "MCP server for export-control legal research. Models US EAR jurisdiction (734.4 de minimis, all 13 FDP rules), Part 740 License Exceptions, Part 744 end-use controls, the Commerce Control List and the Consolidated Screening List against dated eCFR snapshots, plus full Korean 대외무역법 text.",
+  "description": "MCP server for export-control legal research. Models US EAR jurisdiction (734.4 de minimis, all 13 FDP rules), the Part 738 Commerce Country Chart licence determination, Part 740 License Exceptions, Part 744 end-use controls, the Commerce Control List and the Consolidated Screening List against dated eCFR snapshots; the PRC MOFCOM dual-use framework including the suspended Announcement 61 extraterritorial rules; and full Korean 대외무역법 text.",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -14,6 +14,9 @@
     "trade-compliance",
     "semiconductor",
     "battery",
+    "mofcom",
+    "china-export-control",
+    "rare-earths",
     "대외무역법",
     "전략물자"
   ],
