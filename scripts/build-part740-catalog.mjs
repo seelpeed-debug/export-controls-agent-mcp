@@ -10,9 +10,9 @@
 //
 // Usage:  node scripts/build-part740-catalog.mjs [--date YYYY-MM-DD]
 
-import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeSnapshotIfChanged, forceRequested } from "./write-snapshot.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
@@ -107,10 +107,9 @@ const payload = {
   exceptions
 };
 
-mkdirSync(path.dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify(payload, null, 2) + "\n", "utf8");
-
-console.log(`wrote ${OUT}`);
+const result = writeSnapshotIfChanged(OUT, payload, { force: forceRequested(), pretty: true });
+console.log(result.written ? `wrote ${OUT}` : `SKIPPED ${OUT}`);
+console.log(`  ${result.reason}`);
 console.log(`eCFR issue date: ${issueDate}, ${exceptions.length} license exceptions`);
 for (const e of exceptions) {
   console.log(`  ${e.sectionNumber.padEnd(8)} ${(e.symbols.join("/") || "-").padEnd(9)} ${e.title}`);

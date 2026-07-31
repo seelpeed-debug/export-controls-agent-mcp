@@ -11,9 +11,9 @@
 //
 // Usage:  node scripts/build-ccl.mjs [--date YYYY-MM-DD] [--categories 1,3,4,5]
 
-import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeSnapshotIfChanged, forceRequested } from "./write-snapshot.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
@@ -222,11 +222,9 @@ const payload = {
   entries
 };
 
-mkdirSync(path.dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify(payload) + "\n", "utf8");
-
-const bytes = JSON.stringify(payload).length;
-console.log(`wrote ${OUT} (${(bytes / 1024 / 1024).toFixed(2)} MB)`);
+const result = writeSnapshotIfChanged(OUT, payload, { force: forceRequested() });
+console.log(result.written ? `wrote ${OUT}` : `SKIPPED ${OUT}`);
+console.log(`  ${result.reason} (${(result.bytes / 1024 / 1024).toFixed(2)} MB)`);
 console.log(`eCFR issue date: ${issueDate}, ${entries.length} ECCN entries`);
 for (const cat of ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) {
   const n = entries.filter((e) => e.category === cat).length;

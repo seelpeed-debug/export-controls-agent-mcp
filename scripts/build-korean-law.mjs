@@ -13,10 +13,10 @@
 //
 // Usage:  LAW_OC=<your-oc> node scripts/build-korean-law.mjs
 
-import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { LAWS, normalizeLawPayload } from "../src/lib/korean-law-parse.js";
+import { writeSnapshotIfChanged, forceRequested } from "./write-snapshot.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
@@ -109,10 +109,9 @@ const payload = {
   laws
 };
 
-mkdirSync(path.dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify(payload) + "\n", "utf8");
-
-console.log(`\nwrote ${OUT} (${(JSON.stringify(payload).length / 1024).toFixed(0)} KB)`);
+const result = writeSnapshotIfChanged(OUT, payload, { force: forceRequested() });
+console.log(`\n${result.written ? "wrote" : "SKIPPED"} ${OUT} (${(result.bytes / 1024).toFixed(0)} KB)`);
+console.log(`  ${result.reason}`);
 for (const [name, l] of Object.entries(laws)) {
   console.log(`  ${name}: ${l.articleCount} articles, 공포일자 ${l.promulgationDate}, 소관부처 ${l.competentMinistry}`);
 }

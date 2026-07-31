@@ -43,7 +43,12 @@ The server bundles dated snapshots of the regulation text rather than hardcoded 
 | Commerce Control List (Part 774, Supp. No. 1) | eCFR XML | `npm run data:ccl` |
 | 대외무역법 / 국제사법 full text | law.go.kr Open API | `npm run data:korean-law` |
 
-Rebuild the three EAR datasets together with `npm run data:rebuild`. Each builder asserts facts verified against the regulation and refuses to write a dataset that fails them, so a change in the upstream document structure fails loudly instead of silently producing wrong compliance data.
+Rebuild the three EAR datasets together with `npm run data:rebuild`.
+
+Two properties worth knowing:
+
+- Each builder asserts facts verified against the regulation and refuses to write a dataset that fails them, so a change in the upstream document structure fails loudly instead of silently producing wrong compliance data.
+- A builder that finds nothing substantively changed leaves the file alone rather than bumping its `retrievedAt` stamp. That keeps the git history meaningful: a commit touching `src/data/` means the regulation moved, not merely that someone re-ran the script. Pass `--force` to rewrite regardless.
 
 Check whether the snapshots have fallen behind:
 

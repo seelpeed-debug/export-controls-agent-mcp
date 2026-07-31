@@ -8,9 +8,9 @@
 //
 // Usage:  node scripts/build-country-groups.mjs [--date YYYY-MM-DD]
 
-import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeSnapshotIfChanged, forceRequested } from "./write-snapshot.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
@@ -281,10 +281,9 @@ const payload = {
   byCountry: { A: aByCountry, D: dByCountry, E: eByCountry }
 };
 
-mkdirSync(path.dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify(payload, null, 2) + "\n", "utf8");
-
-console.log(`wrote ${OUT}`);
+const result = writeSnapshotIfChanged(OUT, payload, { force: forceRequested(), pretty: true });
+console.log(result.written ? `wrote ${OUT}` : `SKIPPED ${OUT}`);
+console.log(`  ${result.reason}`);
 console.log(`eCFR issue date: ${issueDate}`);
 for (const k of [...A_LABELS, "B", ...D_LABELS, ...E_LABELS]) {
   console.log(`  ${k.padEnd(4)} ${String(groups[k].length).padStart(3)} entries`);
