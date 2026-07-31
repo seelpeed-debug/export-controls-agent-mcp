@@ -192,6 +192,39 @@ Compares the bundled snapshots against the latest eCFR issue date and reports wh
 - `export-controls://official-sources` — canonical official source links
 - `export-controls://data-provenance` — bundled snapshot vintage and rebuild commands
 
+## Publishing a change
+
+```bash
+npm run preflight
+```
+
+One command, seven groups of checks, exit 0 means safe to push. It then prints the commit and push commands.
+
+Each check exists because the corresponding mistake actually happened while building this, not because it seemed prudent:
+
+| Check | What went wrong once |
+| --- | --- |
+| credentials in tracked files | a law.go.kr account id survived as a default value in a test harness about to be committed |
+| tracked file sizes | the 32 MB raw Consolidated Screening List download got staged |
+| placeholder in the remote URL | a literal `<사용자명>` ended up as the git remote, so the first push failed |
+| runtime data present | `src/data/` is generated but required at startup; a clone without it cannot run |
+| snapshot vintage | a "Refresh regulation snapshots" commit changed nothing but a timestamp |
+| tests and validators | — |
+| server starts over stdio | — |
+
+The snapshot-vintage check uses the same thresholds the server does: 7 days for the screening list, 30 days for everything else.
+
+If preflight warns that a snapshot is stale:
+
+```bash
+npm run data:rebuild                 # Country Groups, Part 740 catalog, CCL, screening list
+LAW_OC=<your-oc> npm run data:korean-law
+npm run preflight
+git add -A && git commit -m "Refresh regulation snapshots to eCFR <date>" && git push
+```
+
+A commit touching `src/data/` should mean the regulation actually moved. The builders skip writing when only the `retrievedAt` stamp would change, so a clean `git status` after a rebuild is the expected result when nothing has been amended.
+
 ## Tests
 
 ```powershell

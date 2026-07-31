@@ -38,6 +38,7 @@
     "validate:vocabulary": "node ./scripts/validate-vocabulary.mjs",
     "validate:fdp": "node ./scripts/validate-fdp-rules.mjs",
     "validate": "npm run validate:vocabulary && npm run validate:fdp",
+    "preflight": "node ./scripts/preflight.mjs",
     "calibrate:screening": "node ./verify/calibrate.mjs",
     "data:korean-law": "node ./scripts/build-korean-law.mjs",
     "test": "node ./verify/check-textmatch.mjs && node ./verify/check-critical.mjs && node ./verify/check-ccl.mjs && node ./verify/check-task3.mjs && node ./verify/check-task4.mjs && node ./verify/check-screening.mjs && node ./verify/check-jurisdiction.mjs && node ./verify/check-coverage-claims.mjs"
