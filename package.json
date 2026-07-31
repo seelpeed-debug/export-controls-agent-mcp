@@ -45,6 +45,14 @@
   "engines": {
     "node": ">=18"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seelpeed-debug/export-controls-agent-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/seelpeed-debug/export-controls-agent-mcp/issues"
+  },
+  "homepage": "https://github.com/seelpeed-debug/export-controls-agent-mcp#readme",
+  "author": "seelpeed-debug"
 }
-

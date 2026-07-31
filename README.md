@@ -24,10 +24,13 @@ Two consequences worth stating plainly. An empty issue list means the heuristic 
 
 ## Install
 
-```powershell
-cd D:\ai\paper\export-controls-agent-mcp
+```bash
+git clone https://github.com/seelpeed-debug/export-controls-agent-mcp.git
+cd export-controls-agent-mcp
 npm install
 ```
+
+Node 18 or later. The regulation snapshots are committed, so the server runs immediately after `npm install` with no network access and no API key.
 
 ## Regulation data
 
@@ -61,14 +64,14 @@ No API key is stored in the source or in the generated data files.
 npm start
 ```
 
-MCP clients normally launch this server over stdio. Example client config:
+MCP clients normally launch this server over stdio. Example client config, substituting the absolute path to your clone:
 
 ```json
 {
   "mcpServers": {
     "export-controls-agent": {
       "command": "node",
-      "args": ["D:\\ai\\paper\\export-controls-agent-mcp\\src\\server.js"],
+      "args": ["/absolute/path/to/export-controls-agent-mcp/src/server.js"],
       "env": {
         "LAW_OC": "your-law-go-kr-account-id"
       }
@@ -76,6 +79,10 @@ MCP clients normally launch this server over stdio. Example client config:
   }
 }
 ```
+
+On Windows, escape the backslashes: `"C:\\\\path\\\\to\\\\export-controls-agent-mcp\\\\src\\\\server.js"`.
+
+`LAW_OC` may be omitted entirely; the Korean statute tool then serves the bundled snapshot.
 
 ## Tools
 
