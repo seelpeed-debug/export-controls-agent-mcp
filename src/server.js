@@ -586,7 +586,7 @@ server.registerTool(
   {
     title: "Determine whether the CCL requires a licence",
     description:
-      "Work the Commerce Country Chart (15 C.F.R. Part 738, Supplement No. 1) for an ECCN and a destination, following the 738.4(a)(2) procedure. Reads every Reason for Control in the entry, resolves each to a chart column or to the prose destination scope the entry states instead, and reports each requirement separately because 738.4(a)(2)(ii)(A) requires each one to be overcome on its own. Handles the cases a table lookup misses: the four embargoed destinations whose rows carry no marks at all, the footnotes that require a licence where the grid is empty, destinations that have no row and inherit another country's, and the 738.3(a)(1) entries that bypass the chart entirely. An absent mark is reported as 'no_chart_requirement', never as clearance.",
+      "Work the Commerce Country Chart (15 C.F.R. Part 738, Supplement No. 1) for an ECCN and a destination, following the 738.4(a)(2) procedure. Reads every Reason for Control in the entry, resolves each to a chart column or to the prose destination scope the entry states instead (273 of the 1536 License Requirements rows state a scope rather than naming a column), and reports each requirement separately because 738.4(a)(2)(ii)(A) requires each one to be overcome on its own. Handles the cases a table lookup misses: the four embargoed destinations whose rows carry no marks at all, the footnotes that require a licence where the grid is empty, destinations that have no row and inherit another country's, and the 738.3(a)(1) entries that bypass the chart entirely. An absent mark is reported as 'no_chart_requirement', never as clearance.",
     inputSchema: {
       eccn: z
         .string()

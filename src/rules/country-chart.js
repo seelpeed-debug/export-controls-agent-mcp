@@ -5,7 +5,7 @@
 //
 // THREE THINGS MAKE THIS HARDER THAN A TABLE LOOKUP
 //
-// 1. Only 1260 of the 1545 License Requirements rows in the CCL name a chart
+// 1. Only 1263 of the 1536 License Requirements rows in the CCL name a chart
 //    column. The rest state their scope in prose -- "To or within any
 //    destination worldwide", "To or within Macau or a destination specified in
 //    Country Group D:5", "China, Russia, or Venezuela". A column-only

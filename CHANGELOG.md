@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.4.1 — 2026-07-31
+
+### Fixed — the CCL builder invented licence rows and discarded real ones
+
+The builder treated every table in an ECCN body as the License Requirements
+table, and required a row to have two cells. Both assumptions were wrong, in
+opposite directions.
+
+**Invented.** 2E003 carries the Category 2E Materials Processing deposition table
+alongside its licence table, so eleven coating-process rows entered the licence
+data as things like `{control: "D. Plasma spraying", countryChart: "Superalloys"}`.
+
+**Discarded, which is the more serious half.** Three entries state their
+requirement in a shape the two-cell test rejected:
+
+| Entry | Shape | What was missing |
+| --- | --- | --- |
+| **1C350** | `"CB applies to entire entry CB Column 2."` in one merged cell | A principal chemical-weapons precursor entry carried **no licence data at all**. It now resolves to a marked CB 2 for China, and to no requirement for Japan |
+| **0E982** | a single-column table | A licence is required for all destinations except Canada. Its requirement needs no column, so the table has none |
+| **1E355** | a blank requirement cell | CW reasons to CWC non-States Parties, except Israel and Taiwan, see § 742.18 |
+
+The licence table is identifiable. Sixteen distinct header shapes exist across
+the supplement: fifteen name the Country Chart with varying case and punctuation,
+and the sixteenth is 0E982's bare `Control(s)`. Gating on the header rather than
+taking the first table is also what keeps 1C351, 3D005 and 8C609 whole, because
+those three carry **two** licence tables with different columns, and a naive fix
+would have halved them.
+
+A blank requirement cell is now read as "the requirement is stated in the control
+cell". Where that is not true either, as in 1D018's MT row, the tool reports that
+the cell is blank in the regulation itself rather than an unrecognised format.
+
+Unreadable rows fall from 13 of 1545 to **1 of 1536**, and the remaining one is a
+gap in the CFR text. Both the builder and `validate:country-chart` now assert the
+recovered requirements and the two-table entries, so neither direction of this bug
+can return.
+
 ## 0.4.0 — 2026-07-31
 
 Adds the PRC export-control regime. Until now this server covered the rules that

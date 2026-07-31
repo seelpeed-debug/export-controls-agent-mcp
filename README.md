@@ -200,7 +200,7 @@ The tool does **not** classify items and does **not** screen entities, because n
 
 ### `determine_license_requirement`
 
-Works the Commerce Country Chart for an ECCN and a destination, following § 738.4(a)(2). Reads every Reason for Control in the entry and resolves each one to a chart column or to the prose destination scope the entry states instead. Only 1260 of the 1545 License Requirements rows in the CCL name a column; the rest say things like "To or within any destination worldwide" or "To or within Macau or a destination specified in Country Group D:5", so a column-only reading would return nothing for 3A090 and for 3B001.c.
+Works the Commerce Country Chart for an ECCN and a destination, following § 738.4(a)(2). Reads every Reason for Control in the entry and resolves each one to a chart column or to the prose destination scope the entry states instead. Only 1263 of the 1536 License Requirements rows in the CCL name a column; the other 273 say things like "To or within any destination worldwide" or "To or within Macau or a destination specified in Country Group D:5", so a column-only reading would return nothing for 3A090 and for 3B001.c. One row in the whole list cannot be read, and the reason is in the regulation: 1D018's MT row has a blank Country Chart cell and its control text names no requirement.
 
 Each requirement is reported separately, because § 738.4(a)(2)(ii)(A) requires each one to be overcome on its own.
 
