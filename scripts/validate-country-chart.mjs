@@ -79,7 +79,10 @@ console.log("1. prose destination scopes still appear in the CCL");
 console.log("2. parse coverage");
 // -------------------------------------------------------------------------
 {
-  const CEILING = 13;
+  // One row in the whole CCL cannot be read, and the reason is in the regulation:
+  // 1D018's MT row has a blank Country Chart cell and its control text names no
+  // requirement. The ceiling may fall, never rise.
+  const CEILING = 1;
   let rows = 0;
   let unparsed = 0;
   const offenders = new Map();
@@ -102,20 +105,35 @@ console.log("2. parse coverage");
   } else {
     ok(`${unparsed} of ${rows} rows unreadable (ceiling ${CEILING})`);
   }
-  const unexpected = [...offenders.keys()].filter((e) => !["2E003", "1D018", "1E355"].includes(e));
+  const unexpected = [...offenders.keys()].filter((e) => e !== "1D018");
   if (unexpected.length) {
-    bad(`unreadable rows in unexpected entries: ${unexpected.join(", ")}`);
-  } else if (offenders.size) {
-    ok(`unreadable rows confined to the known defects: ${[...offenders.keys()].join(", ")}`);
-  }
-  // 2E003's item table is mis-parsed into countryChart rows by build-ccl.mjs.
-  // Recorded so it is not mistaken for a Part 738 problem.
-  if (offenders.has("2E003")) {
-    warn(
-      "2E003 carries rows that are its Items list mis-parsed by scripts/build-ccl.mjs, not Country Chart data. " +
-        "The evaluator surfaces them rather than dropping them. Fixing the CCL builder would remove them."
+    bad(
+      `unreadable rows in unexpected entries: ${unexpected.join(", ")}`,
+      "either the CCL changed shape or the evaluator lost a form it used to read"
     );
+  } else if (offenders.size) {
+    ok("the single unreadable row is 1D018's, whose Country Chart cell is blank in the regulation");
   }
+
+  // The rows the CCL builder used to lose. Each of these was absent or wrong
+  // before the licence-table gate, and each is a real requirement.
+  for (const [eccn, want] of [
+    ["1C350", /CB Column 2/i],
+    ["0E982", /all destinations, except canada/i],
+    ["1E355", /742\.18/]
+  ]) {
+    const e = CCL.entries.find((x) => x.eccn === eccn);
+    const blob = JSON.stringify(e?.countryChart ?? []);
+    if (!e?.countryChart?.length) bad(`${eccn} has no License Requirements rows; the licence-table gate has regressed`);
+    else if (!want.test(blob)) bad(`${eccn}'s rows no longer contain ${want}`);
+    else ok(`${eccn} still carries its requirement`);
+  }
+  // And the ones that must not be halved by taking only the first table.
+  for (const [eccn, min] of [["1C351", 3], ["3D005", 4], ["8C609", 6]]) {
+    const n = CCL.entries.find((x) => x.eccn === eccn)?.countryChart?.length ?? 0;
+    if (n < min) bad(`${eccn} has ${n} rows, expected at least ${min}: it carries TWO licence tables`);
+  }
+  ok("entries with two licence tables keep both");
 }
 
 // -------------------------------------------------------------------------

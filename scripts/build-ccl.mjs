@@ -89,6 +89,12 @@ const heads = [...sup.matchAll(HEAD_RE)].map((m) => ({
 if (heads.length < 500) throw new Error(`only found ${heads.length} ECCN headings; expected 600+`);
 
 const entries = [];
+// Tables in an ECCN body that are not the License Requirements table. Recorded
+// rather than silently skipped, so that a change in the CCL's table structure
+// shows up as a count instead of as missing licence rows.
+const nonLicenceTables = [];
+const entriesWithoutLicenceRows = [];
+
 for (let i = 0; i < heads.length; i++) {
   const h = heads[i];
   const body = sup.slice(h.bodyStart, heads[i + 1]?.start ?? sup.length);
@@ -112,17 +118,78 @@ for (let i = 0; i < heads.length; i++) {
     }
   }
 
-  // Country chart rows
+  // License Requirements rows.
+  //
+  // An ECCN body can hold tables that are NOT the License Requirements table.
+  // 2E003 carries the Category 2E Materials Processing deposition table, whose
+  // rows are coating processes and substrates. Reading every table in the body
+  // put eleven rows such as {control: "D. Plasma spraying", countryChart:
+  // "\u201cSuperalloys\u201d"} into the licence data, where the Country Chart
+  // evaluator could only report them as unreadable.
+  //
+  // The licence table is identifiable: its header names the Country Chart. Four
+  // entries have more than one table, and for three of them BOTH are licence
+  // tables with different columns, so gating on the header rather than taking the
+  // first table is what keeps 1C351, 3D005 and 8C609 whole.
   const countryChart = [];
   for (const t of body.matchAll(/<TABLE\b[\s\S]*?<\/TABLE>/gi)) {
+    const headRow = /<TR\b[^>]*>([\s\S]*?)<\/TR>/i.exec(t[0]);
+    const headerCells = headRow
+      ? [...headRow[1].matchAll(/<T[DH]\b[^>]*?\/>|<T[DH]\b[^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((c) =>
+          c[0].endsWith("/>") ? "" : decode(c[1] ?? "")
+        )
+      : [];
+    // Sixteen distinct header shapes exist across the supplement. Fifteen of them
+    // name the Country Chart, with the case and punctuation varying. The
+    // sixteenth is 0E982's, a SINGLE-column table headed only "Control(s)"
+    // because its requirement needs no column: a licence is required for all
+    // destinations except Canada. Accept both, reject anything else.
+    const namesTheChart = headerCells.some((h) => /country\s*chart/i.test(h));
+    const isControlsOnly = /^control\(s\)$/i.test((headerCells[0] ?? "").trim());
+    if (!namesTheChart && !isControlsOnly) {
+      nonLicenceTables.push({ eccn: h.eccn, header: headerCells.slice(0, 3) });
+      continue;
+    }
     const tb = t[0].slice(t[0].search(/<TBODY\b/i));
     for (const r of tb.matchAll(/<TR\b[^>]*>([\s\S]*?)<\/TR>/gi)) {
       const cells = [...r[1].matchAll(/<TD\b[^>]*?\/>|<TD\b[^>]*>([\s\S]*?)<\/TD>/gi)].map((c) =>
         c[0].endsWith("/>") ? "" : decode(c[1] ?? "")
       );
-      if (cells.length >= 2 && cells[0]) countryChart.push({ control: cells[0], countryChart: cells[1] });
+      if (!cells.length || !cells[0]) continue;
+      if (cells.length >= 2 && cells[1]) {
+        countryChart.push({ control: cells[0], countryChart: cells[1] });
+        continue;
+      }
+      if (cells.length >= 2 && !cells[1]) {
+        // The requirement cell is blank in the source. Where that happens the
+        // requirement is stated in the control cell instead: 1E355 reads "CW
+        // applies to entire entry. A license is required for CW reasons to CWC
+        // non-States Parties ... See 742.18 ... The Commerce Country Chart is not
+        // designed to determine licensing requirements for items controlled for CW
+        // reasons." Leaving the field empty threw that away. 1D018's blank cell
+        // carries no requirement at all, which the flag lets a reader see.
+        countryChart.push({
+          control: cells[0],
+          countryChart: cells[0],
+          requirementCellEmptyInSource: true
+        });
+        continue;
+      }
+      // Single-cell row: the control and its requirement are one sentence. The
+      // old `cells.length >= 2` test discarded these, which is why 0E982 carried
+      // no licence data at all despite requiring a licence for every destination
+      // but Canada. The full text goes in both fields on purpose. Splitting it
+      // would leave `control` reading "CC applies to technology for items
+      // controlled by 0A982 or 0A503", which a scope matcher resolves against the
+      // wrong entries and reports as out of scope -- suppressing the requirement.
+      countryChart.push({
+        control: cells[0],
+        countryChart: cells[0],
+        singleCellRow: true
+      });
     }
   }
+  if (!countryChart.length) entriesWithoutLicenceRows.push(h.eccn);
 
   const entry = {
     eccn: h.eccn,
@@ -205,6 +272,38 @@ else if (!/fibrous or filamentary/i.test(c1c010.heading)) {
 for (const required of ["3A090", "3B002", "3B993", "3C002", "3D001", "3E001"]) {
   if (!byEccn.has(required)) failures.push(`${required} not found`);
 }
+
+// Only 2E003 is expected to carry a table that is not the License Requirements
+// table. If another entry starts doing so, either the CCL gained a table or the
+// header test stopped recognising a licence table -- and the second case means
+// licence rows are being dropped, which is exactly the failure this gate exists
+// to prevent. Fail rather than guess which it is.
+const EXPECTED_NON_LICENCE_TABLE_ENTRIES = ["2E003"];
+const unexpectedTables = [...new Set(nonLicenceTables.map((t) => t.eccn))].filter(
+  (e) => !EXPECTED_NON_LICENCE_TABLE_ENTRIES.includes(e)
+);
+if (unexpectedTables.length) {
+  failures.push(
+    `tables not recognised as License Requirements tables in: ${unexpectedTables.join(", ")}. ` +
+      `Headers seen: ${JSON.stringify(nonLicenceTables.filter((t) => unexpectedTables.includes(t.eccn)).slice(0, 4))}. ` +
+      "If these ARE licence tables, the header test is now wrong and licence rows are being lost."
+  );
+}
+// The counterpart guard: verify the entries known to carry two licence tables
+// still keep both, because that is what a naive "take the first table" fix would
+// break.
+for (const [eccn, minRows] of [
+  ["1C351", 3],
+  ["3D005", 4],
+  ["8C609", 6]
+]) {
+  const n = byEccn.get(eccn)?.countryChart?.length ?? 0;
+  if (n < minRows) {
+    failures.push(
+      `${eccn} has ${n} License Requirements rows, expected at least ${minRows}. This entry carries TWO licence tables and both must be read.`
+    );
+  }
+}
 if (failures.length) {
   throw new Error("sanity check failed, refusing to write dataset:\n  - " + failures.join("\n  - "));
 }
@@ -226,6 +325,17 @@ const result = writeSnapshotIfChanged(OUT, payload, { force: forceRequested() })
 console.log(result.written ? `wrote ${OUT}` : `SKIPPED ${OUT}`);
 console.log(`  ${result.reason} (${(result.bytes / 1024 / 1024).toFixed(2)} MB)`);
 console.log(`eCFR issue date: ${issueDate}, ${entries.length} ECCN entries`);
+const licenceRowCount = entries.reduce((n, e) => n + e.countryChart.length, 0);
+console.log(
+  `License Requirements rows: ${licenceRowCount} from ${entries.length - entriesWithoutLicenceRows.length} entries; ` +
+    `${entriesWithoutLicenceRows.length} entries state their requirements outside a table`
+);
+if (nonLicenceTables.length) {
+  console.log(
+    `  skipped ${nonLicenceTables.length} table(s) that are not License Requirements tables: ` +
+      [...new Set(nonLicenceTables.map((t) => t.eccn))].join(", ")
+  );
+}
 for (const cat of ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) {
   const n = entries.filter((e) => e.category === cat).length;
   const deep = DEEP_CATEGORIES.has(cat) ? " (full item text)" : "";

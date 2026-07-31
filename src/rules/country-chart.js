@@ -467,6 +467,22 @@ function evaluateRow(row, dest, baseEccn, candidateEccn) {
     };
   }
 
+  // The CCL leaves the requirement cell blank on a few rows. Where the control
+  // cell states the requirement instead, the builder copies it across and flags
+  // it. Where it does not -- 1D018's MT row is the case -- the regulation itself
+  // names no requirement, and saying so is more useful than reporting an
+  // unrecognised cell format.
+  if (row.requirementCellEmptyInSource && !CROSS_REF.test(cell) && !/licen[cs]e is required/i.test(cell)) {
+    return {
+      ...base,
+      path: "unparsed",
+      determination: "unparsed",
+      requirementCellEmptyInSource: true,
+      note:
+        "The Country Chart cell for this row is blank in the CCL itself and the control text names no requirement, so no column can be read. Read the entry, and the entries it cross-references, directly."
+    };
+  }
+
   const columns = extractColumns(cell, control.reason);
 
   if (columns.length) {

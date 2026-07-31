@@ -263,16 +263,84 @@ const dets = (r) => (r.requirements ?? []).map((x) => x.determination);
       }
     }
   }
-  t("R1", rows === 1545, `${rows} rows evaluated`);
-  t("R2", unparsed <= 13, `${unparsed} unreadable rows (ceiling 13): ${[...offenders].join(", ")}`);
-  // Every unreadable row today is a known ccl.json parsing defect in 2E003 plus
-  // three cells that are empty in the source. If a different entry shows up, the
-  // evaluator has lost the ability to read a form it used to handle.
+  t("R1", rows === 1536, `${rows} rows evaluated`);
+  t("R2", unparsed <= 1, `${unparsed} unreadable rows (ceiling 1): ${[...offenders].join(", ")}`);
+  // Exactly one row in the whole CCL cannot be read, and the reason is in the
+  // regulation rather than in this code: 1D018's MT row has a blank Country Chart
+  // cell and its control text names no requirement. Anything else appearing here
+  // means the evaluator lost the ability to read a form it used to handle.
   t(
     "R3",
-    [...offenders].every((e) => ["2E003", "1D018", "1E355"].includes(e)),
+    [...offenders].every((e) => e === "1D018"),
     `unexpected unreadable entries: ${[...offenders].join(", ")}`
   );
+}
+
+// =========================================================================
+// Rows the CCL builder used to lose or invent
+// =========================================================================
+{
+  // 2E003 carries the Category 2E deposition table alongside its licence table.
+  // Reading every table in the body put eleven coating-process rows into the
+  // licence data. It should now hold exactly its two real rows.
+  const e2 = CCL.entries.find((x) => x.eccn === "2E003");
+  t("B1", e2.countryChart.length === 2, `2E003 has ${e2.countryChart.length} rows`);
+  t(
+    "B2",
+    !JSON.stringify(e2.countryChart).includes("Superalloys"),
+    "the deposition table must not appear in the licence rows"
+  );
+  const r2 = ask("2E003", "China");
+  t("B3", r2.status === "license_required", r2.status);
+  t("B4", !dets(r2).includes("unparsed"), JSON.stringify(r2.determinationCounts));
+
+  // 1C350 stated its whole requirement in one merged cell, so the old
+  // two-cell-minimum test dropped it and this major CW-precursor entry carried no
+  // licence data at all.
+  const c350 = CCL.entries.find((x) => x.eccn === "1C350");
+  t("B5", (c350.countryChart ?? []).length >= 1, `1C350 has ${c350.countryChart?.length ?? 0} rows`);
+  const r350 = ask("1C350", "China");
+  t("B6", r350.status === "license_required", r350.status);
+  t(
+    "B7",
+    r350.requirements.some((x) => (x.columns ?? []).some((c) => c.column === "CB 2" && c.marked)),
+    "1C350 to China must resolve to a marked CB 2"
+  );
+  t("B8", ask("1C350", "Japan").status === "no_chart_requirement", ask("1C350", "Japan").status);
+
+  // 0E982's licence table has a single column, because its requirement needs no
+  // column: a licence is required for all destinations except Canada.
+  const e982 = CCL.entries.find((x) => x.eccn === "0E982");
+  t("B9", (e982.countryChart ?? []).length >= 1, `0E982 has ${e982.countryChart?.length ?? 0} rows`);
+  const r982 = ask("0E982", "Germany");
+  t(
+    "B10",
+    r982.requirements.some((x) => x.proseScope === "all-destinations-except-canada"),
+    JSON.stringify(r982.requirements.map((x) => x.proseScope))
+  );
+  t("B11", r982.status === "requires_verification", r982.status);
+  t("B12", ask("0E982", "Canada").status === "no_chart_requirement", ask("0E982", "Canada").status);
+
+  // 1E355's requirement cell is blank because the requirement is in the control
+  // cell. It must resolve to the cross-reference, not to an unreadable row.
+  const r355 = ask("1E355", "China");
+  const cw = r355.requirements.find((x) => x.reason === "CW");
+  t("B13", cw?.determination === "requires_other_provision", cw?.determination);
+  t("B14", /742\.18/.test(cw?.note ?? ""), "the CW row must carry its 742.18 cross-reference");
+
+  // 1D018's blank cell is a gap in the regulation. Report that, not a format error.
+  const r018 = ask("1D018", "China");
+  const mt = r018.requirements.find((x) => x.reason === "MT");
+  t("B15", mt?.determination === "unparsed", mt?.determination);
+  t("B16", /blank in the CCL itself/.test(mt?.note ?? ""), mt?.note?.slice(0, 70));
+  t("B17", r018.status === "license_required", `NS still resolves: ${r018.status}`);
+
+  // Entries with two licence tables must keep both. A "take the first table" fix
+  // would have quietly halved these.
+  for (const [i, [eccn, min]] of [["1C351", 3], ["3D005", 4], ["8C609", 6]].entries()) {
+    const n = CCL.entries.find((x) => x.eccn === eccn)?.countryChart?.length ?? 0;
+    t(`B18.${i + 1}`, n >= min, `${eccn} has ${n} rows, expected at least ${min}`);
+  }
 }
 
 // =========================================================================
