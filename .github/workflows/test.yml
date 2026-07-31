@@ -1,0 +1,63 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22", "24"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      # No LAW_OC secret is needed. get_korean_law_article falls back to the
+      # bundled statute snapshot and the live-path assertions self-skip.
+      - name: Run test suites
+        run: npm test
+
+      - name: Assert vocabulary search terms exist in the bundled CCL
+        run: npm run validate:vocabulary
+
+      - name: Assert the server starts and lists its tools over stdio
+        run: node ./verify/run-verification.mjs
+
+  data-freshness:
+    # Informational only: reports when the bundled eCFR snapshots fall behind.
+    # Does not fail the build, because a stale snapshot is not a code defect.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Compare bundled snapshots against the latest eCFR issue date
+        run: |
+          node -e "
+          import('./src/lib/provenance.js')
+            .then(m => m.checkFreshness())
+            .then(r => {
+              console.log('eCFR latest issue date:', r.ecfrLatestIssueDate);
+              console.log('up to date:', r.upToDate);
+              console.log(r.recommendation);
+              for (const d of r.localDatasets) {
+                console.log(\`  \${d.id}: snapshot \${d.ecfrIssueDate}, \${d.ageDays} days old\`);
+              }
+            });
+          "

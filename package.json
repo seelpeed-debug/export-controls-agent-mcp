@@ -1,0 +1,50 @@
+{
+  "name": "export-controls-agent-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for export-control legal research: US EAR (Parts 740/744/774), EU Regulation 2021/821, and the Korean Foreign Trade Act, with dated regulation snapshots.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "export-controls",
+    "ear",
+    "bis",
+    "eccn",
+    "commerce-control-list",
+    "sanctions",
+    "trade-compliance",
+    "semiconductor",
+    "battery",
+    "대외무역법",
+    "전략물자"
+  ],
+  "type": "module",
+  "bin": {
+    "export-controls-agent-mcp": "./src/server.js"
+  },
+  "files": [
+    "src/",
+    "scripts/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node ./src/server.js",
+    "inspect": "npx @modelcontextprotocol/inspector node ./src/server.js",
+    "data:country-groups": "node ./scripts/build-country-groups.mjs",
+    "data:part740": "node ./scripts/build-part740-catalog.mjs",
+    "data:ccl": "node ./scripts/build-ccl.mjs",
+    "data:rebuild": "npm run data:country-groups && npm run data:part740 && npm run data:ccl && npm run validate:vocabulary",
+    "validate:vocabulary": "node ./scripts/validate-vocabulary.mjs",
+    "data:korean-law": "node ./scripts/build-korean-law.mjs",
+    "test": "node ./verify/check-textmatch.mjs && node ./verify/check-critical.mjs && node ./verify/check-ccl.mjs && node ./verify/check-task3.mjs && node ./verify/check-task4.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.5",
+    "zod": "^3.25.76"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
+

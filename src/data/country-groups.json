@@ -1,0 +1,1130 @@
+{
+  "$comment": "GENERATED FILE -- do not edit by hand. Regenerate with: node scripts/build-country-groups.mjs",
+  "citation": "15 C.F.R. Part 740, Supplement No. 1 (Country Groups)",
+  "source": {
+    "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-23/title-15.xml?part=740",
+    "api": "eCFR versioner v1",
+    "format": "XML"
+  },
+  "ecfrIssueDate": "2026-07-23",
+  "retrievedAt": "2026-07-31T00:33:39.332Z",
+  "notes": {
+    "macau": "Macau is NOT in Country Group D:5. The EAR writes 'Macau or a destination specified in Country Group D:5' throughout, so any rule keyed only on D:5 must add Macau explicitly.",
+    "d5Controlling": "Per the note to Country Group D:5, if this table conflicts with the State Department's arms-embargo notices (22 CFR 126.1 and Federal Register), the State Department list controls.",
+    "uae": "License Exception STA is available only to approved UAE entities listed in Supplement No. 8 to Part 740 (see 15 C.F.R. 740.2(a)(26))."
+  },
+  "aliases": {
+    "china": "China (PRC)",
+    "china (people's republic of)": "China (PRC)",
+    "people's republic of china": "China (PRC)",
+    "prc": "China (PRC)",
+    "mainland china": "China (PRC)",
+    "macao": "Macau",
+    "macau sar": "Macau",
+    "hong kong": "Hong Kong",
+    "south korea": "Korea, South",
+    "republic of korea": "Korea, South",
+    "korea, republic of": "Korea, South",
+    "korea (republic of)": "Korea, South",
+    "rok": "Korea, South",
+    "north korea": "Korea, North",
+    "dprk": "Korea, North",
+    "korea (democratic people's republic of)": "Korea, North",
+    "democratic people's republic of korea": "Korea, North",
+    "myanmar": "Burma",
+    "turkey": "Türkiye",
+    "turkiye": "Türkiye",
+    "uae": "United Arab Emirates",
+    "uk": "United Kingdom",
+    "great britain": "United Kingdom",
+    "usa": "United States",
+    "us": "United States",
+    "u.s.": "United States",
+    "united states of america": "United States",
+    "russian federation": "Russia",
+    "south sudan": "South Sudan, Republic of",
+    "congo (democratic republic of the)": "Congo (Democratic Republic of)",
+    "drc": "Congo (Democratic Republic of)",
+    "czechia": "Czech Republic",
+    "viet nam": "Vietnam"
+  },
+  "labels": {
+    "A:1": "Wassenaar Arrangement participating states",
+    "A:2": "Missile Technology Control Regime",
+    "A:3": "Australia Group",
+    "A:4": "Nuclear Suppliers Group",
+    "A:5": "STA-eligible (Tier 1) destinations",
+    "A:6": "Additional STA-eligible destinations",
+    "B": "Country Group B",
+    "D:1": "National Security concern",
+    "D:2": "Nuclear concern",
+    "D:3": "Chemical & Biological concern",
+    "D:4": "Missile Technology concern",
+    "D:5": "U.S. arms-embargoed countries",
+    "E:1": "Terrorist supporting countries / comprehensive embargo",
+    "E:2": "Unilateral embargo"
+  },
+  "groups": {
+    "A:1": [
+      "Argentina",
+      "Australia",
+      "Austria",
+      "Belgium",
+      "Bulgaria",
+      "Canada",
+      "Croatia",
+      "Czech Republic",
+      "Denmark",
+      "Estonia",
+      "Finland",
+      "France",
+      "Germany",
+      "Greece",
+      "Hungary",
+      "Iceland",
+      "India",
+      "Ireland",
+      "Italy",
+      "Japan",
+      "Korea, South",
+      "Latvia",
+      "Lithuania",
+      "Luxembourg",
+      "Mexico",
+      "Netherlands",
+      "New Zealand",
+      "Norway",
+      "Poland",
+      "Portugal",
+      "Romania",
+      "Slovakia",
+      "Slovenia",
+      "South Africa",
+      "Spain",
+      "Sweden",
+      "Switzerland",
+      "Türkiye",
+      "United Kingdom",
+      "United States"
+    ],
+    "A:2": [
+      "Argentina",
+      "Australia",
+      "Austria",
+      "Belgium",
+      "Brazil",
+      "Bulgaria",
+      "Canada",
+      "Czech Republic",
+      "Denmark",
+      "Finland",
+      "France",
+      "Germany",
+      "Greece",
+      "Hungary",
+      "Iceland",
+      "India",
+      "Ireland",
+      "Italy",
+      "Japan",
+      "Korea, South",
+      "Luxembourg",
+      "Netherlands",
+      "New Zealand",
+      "Norway",
+      "Poland",
+      "Portugal",
+      "South Africa",
+      "Spain",
+      "Sweden",
+      "Switzerland",
+      "Türkiye",
+      "Ukraine",
+      "United Kingdom",
+      "United States"
+    ],
+    "A:3": [
+      "Argentina",
+      "Australia",
+      "Austria",
+      "Belgium",
+      "Bulgaria",
+      "Canada",
+      "Croatia",
+      "Cyprus",
+      "Czech Republic",
+      "Denmark",
+      "Estonia",
+      "Finland",
+      "France",
+      "Germany",
+      "Greece",
+      "Hungary",
+      "Iceland",
+      "India",
+      "Ireland",
+      "Italy",
+      "Japan",
+      "Korea, South",
+      "Latvia",
+      "Lithuania",
+      "Luxembourg",
+      "Malta",
+      "Mexico",
+      "Netherlands",
+      "New Zealand",
+      "Norway",
+      "Poland",
+      "Portugal",
+      "Romania",
+      "Slovakia",
+      "Slovenia",
+      "Spain",
+      "Sweden",
+      "Switzerland",
+      "Türkiye",
+      "Ukraine",
+      "United Kingdom",
+      "United States"
+    ],
+    "A:4": [
+      "Argentina",
+      "Australia",
+      "Austria",
+      "Belgium",
+      "Brazil",
+      "Bulgaria",
+      "Canada",
+      "Croatia",
+      "Cyprus",
+      "Czech Republic",
+      "Denmark",
+      "Estonia",
+      "Finland",
+      "France",
+      "Germany",
+      "Greece",
+      "Hungary",
+      "Iceland",
+      "Ireland",
+      "Italy",
+      "Japan",
+      "Kazakhstan",
+      "Korea, South",
+      "Latvia",
+      "Lithuania",
+      "Luxembourg",
+      "Malta",
+      "Mexico",
+      "Netherlands",
+      "New Zealand",
+      "Norway",
+      "Poland",
+      "Portugal",
+      "Romania",
+      "Serbia",
+      "Slovakia",
+      "Slovenia",
+      "South Africa",
+      "Spain",
+      "Sweden",
+      "Switzerland",
+      "Türkiye",
+      "Ukraine",
+      "United Kingdom",
+      "United States"
+    ],
+    "A:5": [
+      "Argentina",
+      "Australia",
+      "Austria",
+      "Belgium",
+      "Bulgaria",
+      "Canada",
+      "Croatia",
+      "Czech Republic",
+      "Denmark",
+      "Estonia",
+      "Finland",
+      "France",
+      "Germany",
+      "Greece",
+      "Hungary",
+      "Iceland",
+      "India",
+      "Ireland",
+      "Italy",
+      "Japan",
+      "Korea, South",
+      "Latvia",
+      "Lithuania",
+      "Luxembourg",
+      "Netherlands",
+      "New Zealand",
+      "Norway",
+      "Poland",
+      "Portugal",
+      "Romania",
+      "Slovakia",
+      "Slovenia",
+      "Spain",
+      "Sweden",
+      "Switzerland",
+      "Türkiye",
+      "United Arab Emirates",
+      "United Kingdom"
+    ],
+    "A:6": [
+      "Albania",
+      "Cyprus",
+      "Israel",
+      "Malta",
+      "Mexico",
+      "Singapore",
+      "South Africa",
+      "Taiwan"
+    ],
+    "B": [
+      "Afghanistan",
+      "Albania",
+      "Algeria",
+      "Andorra",
+      "Angola",
+      "Antigua and Barbuda",
+      "Argentina",
+      "Aruba",
+      "Australia",
+      "Austria",
+      "Bahrain",
+      "Bangladesh",
+      "Barbados",
+      "Belgium",
+      "Belize",
+      "Benin",
+      "Bhutan",
+      "Bolivia",
+      "Bosnia & Herzegovina",
+      "Botswana",
+      "Brazil",
+      "Brunei",
+      "Bulgaria",
+      "Burkina Faso",
+      "Burundi",
+      "Cameroon",
+      "Canada",
+      "Cape Verde",
+      "Central African Republic",
+      "Chad",
+      "Chile",
+      "Colombia",
+      "Comoros",
+      "Congo (Democratic Republic of the)",
+      "Congo (Republic of the)",
+      "Costa Rica",
+      "Cote d'lvoire",
+      "Croatia",
+      "Curaçao",
+      "Cyprus",
+      "Czech Republic",
+      "Denmark",
+      "Djibouti",
+      "Dominica",
+      "Dominican Republic",
+      "Ecuador",
+      "Egypt",
+      "El Salvador",
+      "Equatorial Guinea",
+      "Eritrea",
+      "Estonia",
+      "Eswatini",
+      "Ethiopia",
+      "Fiji",
+      "Finland",
+      "France",
+      "Gabon",
+      "Gambia, The",
+      "Germany",
+      "Ghana",
+      "Greece",
+      "Grenada",
+      "Guatemala",
+      "Guinea",
+      "Guinea-Bissau",
+      "Guyana",
+      "Haiti",
+      "Honduras",
+      "Hungary",
+      "Iceland",
+      "India",
+      "Indonesia",
+      "Ireland",
+      "Israel",
+      "Italy",
+      "Jamaica",
+      "Japan",
+      "Jordan",
+      "Kenya",
+      "Kiribati",
+      "Korea, South",
+      "Kosovo",
+      "Kuwait",
+      "Latvia",
+      "Lebanon",
+      "Lesotho",
+      "Liberia",
+      "Lithuania",
+      "Luxembourg",
+      "Madagascar",
+      "Malawi",
+      "Malaysia",
+      "Maldives",
+      "Mali",
+      "Malta",
+      "Marshall Islands",
+      "Mauritania",
+      "Mauritius",
+      "Mexico",
+      "Micronesia, Federated States of",
+      "Monaco",
+      "Montenegro",
+      "Morocco",
+      "Mozambique",
+      "Namibia",
+      "Nauru",
+      "Nepal",
+      "Netherlands",
+      "New Zealand",
+      "Niger",
+      "Nigeria",
+      "North Macedonia",
+      "Norway",
+      "Oman",
+      "Pakistan",
+      "Palau",
+      "Panama",
+      "Papua New Guinea",
+      "Paraguay",
+      "Peru",
+      "Philippines",
+      "Poland",
+      "Portugal",
+      "Qatar",
+      "Romania",
+      "Rwanda",
+      "Saint Kitts & Nevis",
+      "Saint Lucia",
+      "Saint Vincent and the Grenadines",
+      "Samoa",
+      "San Marino",
+      "Sao Tome & Principe",
+      "Saudi Arabia",
+      "Senegal",
+      "Serbia",
+      "Seychelles",
+      "Sierra Leone",
+      "Singapore",
+      "Sint Maarten (the Dutch two-fifths of the island of Saint Martin)",
+      "Slovakia",
+      "Slovenia",
+      "Solomon Islands",
+      "Somalia",
+      "South Africa",
+      "South Sudan, Republic of",
+      "Spain",
+      "Sri Lanka",
+      "Sudan",
+      "Suriname",
+      "Sweden",
+      "Switzerland",
+      "Taiwan",
+      "Tanzania",
+      "Thailand",
+      "The Bahamas",
+      "Timor-Leste",
+      "Togo",
+      "Tonga",
+      "Trinidad & Tobago",
+      "Tunisia",
+      "Türkiye",
+      "Tuvalu",
+      "Uganda",
+      "Ukraine",
+      "United Arab Emirates",
+      "United Kingdom",
+      "United States",
+      "Uruguay",
+      "Vanuatu",
+      "Vatican City",
+      "Western Sahara",
+      "Zambia",
+      "Zimbabwe"
+    ],
+    "D:1": [
+      "Armenia",
+      "Azerbaijan",
+      "Belarus",
+      "Burma",
+      "Cambodia",
+      "China (PRC)",
+      "Georgia",
+      "Iraq",
+      "Kazakhstan",
+      "Korea, North",
+      "Kyrgyzstan",
+      "Laos",
+      "Libya",
+      "Macau",
+      "Moldova",
+      "Mongolia",
+      "Nicaragua",
+      "Russia",
+      "Tajikistan",
+      "Turkmenistan",
+      "Uzbekistan",
+      "Venezuela",
+      "Vietnam",
+      "Yemen"
+    ],
+    "D:2": [
+      "Belarus",
+      "Cuba",
+      "Iran",
+      "Iraq",
+      "Israel",
+      "Korea, North",
+      "Libya",
+      "Pakistan",
+      "Russia",
+      "Venezuela"
+    ],
+    "D:3": [
+      "Afghanistan",
+      "Armenia",
+      "Azerbaijan",
+      "Bahrain",
+      "Belarus",
+      "Burma",
+      "China (PRC)",
+      "Cuba",
+      "Egypt",
+      "Georgia",
+      "Iran",
+      "Iraq",
+      "Israel",
+      "Jordan",
+      "Kazakhstan",
+      "Korea, North",
+      "Kuwait",
+      "Kyrgyzstan",
+      "Lebanon",
+      "Libya",
+      "Macau",
+      "Moldova",
+      "Mongolia",
+      "Oman",
+      "Pakistan",
+      "Qatar",
+      "Russia",
+      "Saudi Arabia",
+      "Syria",
+      "Taiwan",
+      "Tajikistan",
+      "Turkmenistan",
+      "Uzbekistan",
+      "Venezuela",
+      "Vietnam",
+      "Yemen"
+    ],
+    "D:4": [
+      "Bahrain",
+      "Belarus",
+      "China (PRC)",
+      "Egypt",
+      "Iran",
+      "Iraq",
+      "Israel",
+      "Jordan",
+      "Korea, North",
+      "Kuwait",
+      "Lebanon",
+      "Libya",
+      "Macau",
+      "Oman",
+      "Pakistan",
+      "Qatar",
+      "Russia",
+      "Saudi Arabia",
+      "Syria",
+      "Venezuela",
+      "Yemen"
+    ],
+    "D:5": [
+      "Afghanistan",
+      "Belarus",
+      "Burma",
+      "Central African Republic",
+      "China (PRC)",
+      "Congo (Democratic Republic of)",
+      "Cuba",
+      "Eritrea",
+      "Haiti",
+      "Iran",
+      "Iraq",
+      "Korea, North",
+      "Lebanon",
+      "Libya",
+      "Nicaragua",
+      "Russia",
+      "Somalia",
+      "South Sudan, Republic of",
+      "Sudan",
+      "Syria",
+      "Venezuela",
+      "Zimbabwe"
+    ],
+    "E:1": [
+      "Iran",
+      "Korea, North",
+      "Syria"
+    ],
+    "E:2": [
+      "Cuba"
+    ]
+  },
+  "byCountry": {
+    "A": {
+      "Albania": [
+        "A:6"
+      ],
+      "Argentina": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Australia": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Austria": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Belgium": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Brazil": [
+        "A:2",
+        "A:4"
+      ],
+      "Bulgaria": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Canada": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Croatia": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Cyprus": [
+        "A:3",
+        "A:4",
+        "A:6"
+      ],
+      "Czech Republic": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Denmark": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Estonia": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Finland": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "France": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Germany": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Greece": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Hungary": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Iceland": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "India": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:5"
+      ],
+      "Ireland": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Israel": [
+        "A:6"
+      ],
+      "Italy": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Japan": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Kazakhstan": [
+        "A:4"
+      ],
+      "Korea, South": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Latvia": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Lithuania": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Luxembourg": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Malta": [
+        "A:3",
+        "A:4",
+        "A:6"
+      ],
+      "Mexico": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:6"
+      ],
+      "Netherlands": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "New Zealand": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Norway": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Poland": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Portugal": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Romania": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Serbia": [
+        "A:4"
+      ],
+      "Singapore": [
+        "A:6"
+      ],
+      "Slovakia": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Slovenia": [
+        "A:1",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "South Africa": [
+        "A:1",
+        "A:2",
+        "A:4",
+        "A:6"
+      ],
+      "Spain": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Sweden": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Switzerland": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Taiwan": [
+        "A:6"
+      ],
+      "Türkiye": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "Ukraine": [
+        "A:2",
+        "A:3",
+        "A:4"
+      ],
+      "United Arab Emirates": [
+        "A:5"
+      ],
+      "United Kingdom": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:5"
+      ],
+      "United States": [
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4"
+      ]
+    },
+    "D": {
+      "Afghanistan": [
+        "D:3",
+        "D:5"
+      ],
+      "Armenia": [
+        "D:1",
+        "D:3"
+      ],
+      "Azerbaijan": [
+        "D:1",
+        "D:3"
+      ],
+      "Bahrain": [
+        "D:3",
+        "D:4"
+      ],
+      "Belarus": [
+        "D:1",
+        "D:2",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Burma": [
+        "D:1",
+        "D:3",
+        "D:5"
+      ],
+      "Cambodia": [
+        "D:1"
+      ],
+      "Central African Republic": [
+        "D:5"
+      ],
+      "China (PRC)": [
+        "D:1",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Congo (Democratic Republic of)": [
+        "D:5"
+      ],
+      "Cuba": [
+        "D:2",
+        "D:3",
+        "D:5"
+      ],
+      "Egypt": [
+        "D:3",
+        "D:4"
+      ],
+      "Eritrea": [
+        "D:5"
+      ],
+      "Georgia": [
+        "D:1",
+        "D:3"
+      ],
+      "Haiti": [
+        "D:5"
+      ],
+      "Iran": [
+        "D:2",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Iraq": [
+        "D:1",
+        "D:2",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Israel": [
+        "D:2",
+        "D:3",
+        "D:4"
+      ],
+      "Jordan": [
+        "D:3",
+        "D:4"
+      ],
+      "Kazakhstan": [
+        "D:1",
+        "D:3"
+      ],
+      "Korea, North": [
+        "D:1",
+        "D:2",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Kuwait": [
+        "D:3",
+        "D:4"
+      ],
+      "Kyrgyzstan": [
+        "D:1",
+        "D:3"
+      ],
+      "Laos": [
+        "D:1"
+      ],
+      "Lebanon": [
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Libya": [
+        "D:1",
+        "D:2",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Macau": [
+        "D:1",
+        "D:3",
+        "D:4"
+      ],
+      "Moldova": [
+        "D:1",
+        "D:3"
+      ],
+      "Mongolia": [
+        "D:1",
+        "D:3"
+      ],
+      "Nicaragua": [
+        "D:1",
+        "D:5"
+      ],
+      "Oman": [
+        "D:3",
+        "D:4"
+      ],
+      "Pakistan": [
+        "D:2",
+        "D:3",
+        "D:4"
+      ],
+      "Qatar": [
+        "D:3",
+        "D:4"
+      ],
+      "Russia": [
+        "D:1",
+        "D:2",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Saudi Arabia": [
+        "D:3",
+        "D:4"
+      ],
+      "Somalia": [
+        "D:5"
+      ],
+      "South Sudan, Republic of": [
+        "D:5"
+      ],
+      "Sudan": [
+        "D:5"
+      ],
+      "Syria": [
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Taiwan": [
+        "D:3"
+      ],
+      "Tajikistan": [
+        "D:1",
+        "D:3"
+      ],
+      "Turkmenistan": [
+        "D:1",
+        "D:3"
+      ],
+      "Uzbekistan": [
+        "D:1",
+        "D:3"
+      ],
+      "Venezuela": [
+        "D:1",
+        "D:2",
+        "D:3",
+        "D:4",
+        "D:5"
+      ],
+      "Vietnam": [
+        "D:1",
+        "D:3"
+      ],
+      "Yemen": [
+        "D:1",
+        "D:3",
+        "D:4"
+      ],
+      "Zimbabwe": [
+        "D:5"
+      ]
+    },
+    "E": {
+      "Cuba": [
+        "E:2"
+      ],
+      "Iran": [
+        "E:1"
+      ],
+      "Korea, North": [
+        "E:1"
+      ],
+      "Syria": [
+        "E:1"
+      ]
+    }
+  }
+}

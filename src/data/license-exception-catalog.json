@@ -1,0 +1,231 @@
+{
+  "$comment": "GENERATED FILE -- do not edit by hand. Regenerate with: node scripts/build-part740-catalog.mjs",
+  "citation": "15 C.F.R. Part 740 (License Exceptions)",
+  "source": {
+    "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-23/title-15.xml?part=740",
+    "api": "eCFR versioner v1",
+    "format": "XML"
+  },
+  "ecfrIssueDate": "2026-07-23",
+  "retrievedAt": "2026-07-31T00:35:42.973Z",
+  "count": 27,
+  "exceptions": [
+    {
+      "section": "15 C.F.R. § 740.3",
+      "sectionNumber": "740.3",
+      "symbols": [
+        "LVS"
+      ],
+      "title": "Shipments of limited value (LVS)"
+    },
+    {
+      "section": "15 C.F.R. § 740.4",
+      "sectionNumber": "740.4",
+      "symbols": [
+        "GBS"
+      ],
+      "title": "Shipments to Country Group B countries (GBS)"
+    },
+    {
+      "section": "15 C.F.R. § 740.5",
+      "sectionNumber": "740.5",
+      "symbols": [
+        "SPP"
+      ],
+      "title": "License Exception Syria Peace and Prosperity (SPP)"
+    },
+    {
+      "section": "15 C.F.R. § 740.6",
+      "sectionNumber": "740.6",
+      "symbols": [
+        "TSR"
+      ],
+      "title": "Technology and software under restriction (TSR)"
+    },
+    {
+      "section": "15 C.F.R. § 740.7",
+      "sectionNumber": "740.7",
+      "symbols": [
+        "APP"
+      ],
+      "title": "Computers (APP)"
+    },
+    {
+      "section": "15 C.F.R. § 740.8",
+      "sectionNumber": "740.8",
+      "symbols": [
+        "NAC",
+        "ACA"
+      ],
+      "title": "Notified Advanced Computing (NAC) and Advanced Computing Authorized (ACA)"
+    },
+    {
+      "section": "15 C.F.R. § 740.9",
+      "sectionNumber": "740.9",
+      "symbols": [
+        "TMP"
+      ],
+      "title": "Temporary imports, exports, reexports, and transfers (in-country) (TMP)"
+    },
+    {
+      "section": "15 C.F.R. § 740.10",
+      "sectionNumber": "740.10",
+      "symbols": [
+        "RPL"
+      ],
+      "title": "License Exception Servicing and replacement of parts and equipment (RPL)"
+    },
+    {
+      "section": "15 C.F.R. § 740.11",
+      "sectionNumber": "740.11",
+      "symbols": [
+        "GOV"
+      ],
+      "title": "Governments, international organizations, international inspections under the Chemical Weapons Convention, and the International Space Station (GOV)"
+    },
+    {
+      "section": "15 C.F.R. § 740.12",
+      "sectionNumber": "740.12",
+      "symbols": [
+        "GFT"
+      ],
+      "title": "Gift parcels and humanitarian donations (GFT)"
+    },
+    {
+      "section": "15 C.F.R. § 740.13",
+      "sectionNumber": "740.13",
+      "symbols": [
+        "TSU"
+      ],
+      "title": "Technology and software—unrestricted (TSU)"
+    },
+    {
+      "section": "15 C.F.R. § 740.14",
+      "sectionNumber": "740.14",
+      "symbols": [
+        "BAG"
+      ],
+      "title": "Baggage (BAG)"
+    },
+    {
+      "section": "15 C.F.R. § 740.15",
+      "sectionNumber": "740.15",
+      "symbols": [
+        "AVS"
+      ],
+      "title": "Aircraft, vessels and spacecraft (AVS)"
+    },
+    {
+      "section": "15 C.F.R. § 740.16",
+      "sectionNumber": "740.16",
+      "symbols": [
+        "APR"
+      ],
+      "title": "Additional permissive reexports (APR)"
+    },
+    {
+      "section": "15 C.F.R. § 740.17",
+      "sectionNumber": "740.17",
+      "symbols": [
+        "ENC"
+      ],
+      "title": "Encryption commodities, software, and technology (ENC)"
+    },
+    {
+      "section": "15 C.F.R. § 740.18",
+      "sectionNumber": "740.18",
+      "symbols": [
+        "AGR"
+      ],
+      "title": "Agricultural commodities (AGR)"
+    },
+    {
+      "section": "15 C.F.R. § 740.19",
+      "sectionNumber": "740.19",
+      "symbols": [
+        "CCD"
+      ],
+      "title": "Consumer Communications Devices (CCD)"
+    },
+    {
+      "section": "15 C.F.R. § 740.20",
+      "sectionNumber": "740.20",
+      "symbols": [
+        "STA"
+      ],
+      "title": "License Exception Strategic Trade Authorization (STA)"
+    },
+    {
+      "section": "15 C.F.R. § 740.21",
+      "sectionNumber": "740.21",
+      "symbols": [
+        "SCP"
+      ],
+      "title": "Support for the Cuban People (SCP)"
+    },
+    {
+      "section": "15 C.F.R. § 740.22",
+      "sectionNumber": "740.22",
+      "symbols": [
+        "ACE"
+      ],
+      "title": "Authorized Cybersecurity Exports (ACE)"
+    },
+    {
+      "section": "15 C.F.R. § 740.23",
+      "sectionNumber": "740.23",
+      "symbols": [
+        "MED"
+      ],
+      "title": "Medical Devices (MED)"
+    },
+    {
+      "section": "15 C.F.R. § 740.24",
+      "sectionNumber": "740.24",
+      "symbols": [
+        "IEC"
+      ],
+      "title": "Implemented Export Control (IEC)"
+    },
+    {
+      "section": "15 C.F.R. § 740.25",
+      "sectionNumber": "740.25",
+      "symbols": [
+        "HBM"
+      ],
+      "title": "License Exception High Bandwidth Memory (HBM)"
+    },
+    {
+      "section": "15 C.F.R. § 740.26",
+      "sectionNumber": "740.26",
+      "symbols": [
+        "RFF"
+      ],
+      "title": "License Exception Restricted Fabrication “Facility” (RFF)"
+    },
+    {
+      "section": "15 C.F.R. § 740.27",
+      "sectionNumber": "740.27",
+      "symbols": [
+        "AIA"
+      ],
+      "title": "License Exception Artificial Intelligence Authorization (AIA)"
+    },
+    {
+      "section": "15 C.F.R. § 740.28",
+      "sectionNumber": "740.28",
+      "symbols": [
+        "ACM"
+      ],
+      "title": "License Exception Advanced Compute Manufacturing (ACM)"
+    },
+    {
+      "section": "15 C.F.R. § 740.29",
+      "sectionNumber": "740.29",
+      "symbols": [
+        "LPP"
+      ],
+      "title": "License Exception Low Processing Performance (LPP)"
+    }
+  ]
+}

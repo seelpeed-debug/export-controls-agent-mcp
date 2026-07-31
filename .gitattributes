@@ -1,0 +1,9 @@
+# Normalise line endings so a Windows working tree does not produce CRLF churn.
+* text=auto eol=lf
+
+# Generated regulation snapshots: large, machine-written, not worth diffing.
+src/data/*.json linguist-generated=true -diff
+
+*.png binary
+*.jpg binary
+*.pdf binary
