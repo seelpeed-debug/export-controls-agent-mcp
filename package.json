@@ -33,10 +33,14 @@
     "data:country-groups": "node ./scripts/build-country-groups.mjs",
     "data:part740": "node ./scripts/build-part740-catalog.mjs",
     "data:ccl": "node ./scripts/build-ccl.mjs",
-    "data:rebuild": "npm run data:country-groups && npm run data:part740 && npm run data:ccl && npm run validate:vocabulary",
+    "data:screening": "node ./scripts/build-screening-list.mjs",
+    "data:rebuild": "npm run data:country-groups && npm run data:part740 && npm run data:ccl && npm run data:screening && npm run validate:vocabulary",
     "validate:vocabulary": "node ./scripts/validate-vocabulary.mjs",
+    "validate:fdp": "node ./scripts/validate-fdp-rules.mjs",
+    "validate": "npm run validate:vocabulary && npm run validate:fdp",
+    "calibrate:screening": "node ./verify/calibrate.mjs",
     "data:korean-law": "node ./scripts/build-korean-law.mjs",
-    "test": "node ./verify/check-textmatch.mjs && node ./verify/check-critical.mjs && node ./verify/check-ccl.mjs && node ./verify/check-task3.mjs && node ./verify/check-task4.mjs"
+    "test": "node ./verify/check-textmatch.mjs && node ./verify/check-critical.mjs && node ./verify/check-ccl.mjs && node ./verify/check-task3.mjs && node ./verify/check-task4.mjs && node ./verify/check-screening.mjs && node ./verify/check-jurisdiction.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.5",

@@ -13,9 +13,17 @@ const require = createRequire(import.meta.url);
 const COUNTRY_GROUPS = require("../data/country-groups.json");
 const LICENCE_CATALOG = require("../data/license-exception-catalog.json");
 const CCL = require("../data/ccl.json");
+const SCREENING = require("../data/screening-list.json");
+const { FDP_PROVENANCE } = require("../data/fdp-rules.js");
 
 /** Snapshots older than this many days are reported as stale. */
 export const STALE_AFTER_DAYS = 30;
+
+/**
+ * Restricted-party lists change by Federal Register notice, often weekly, so
+ * the screening snapshot gets its own much shorter threshold.
+ */
+export const SCREENING_STALE_AFTER_DAYS = 7;
 
 const DATASETS = [
   {
@@ -41,6 +49,29 @@ const DATASETS = [
     retrievedAt: CCL.retrievedAt,
     sourceUrl: CCL.source?.url ?? null,
     rebuildCommand: "node scripts/build-ccl.mjs"
+  },
+  {
+    id: "screening-list",
+    citation: SCREENING.citation,
+    ecfrIssueDate: null, // not an eCFR document
+    sourceGeneratedAt: SCREENING.sourceGeneratedAt,
+    retrievedAt: SCREENING.retrievedAt,
+    sourceUrl: SCREENING.source?.url ?? null,
+    staleAfterDays: SCREENING_STALE_AFTER_DAYS,
+    rebuildCommand: "node scripts/build-screening-list.mjs"
+  },
+  {
+    // Not a generated snapshot: the § 734.9 rule scopes are transcribed by hand
+    // because they are prose mixed with ECCN lists. There is nothing to rebuild,
+    // so the check is a drift validation against the live section instead.
+    id: "fdp-rules",
+    citation: FDP_PROVENANCE.citation,
+    ecfrIssueDate: FDP_PROVENANCE.ecfrIssueDate,
+    retrievedAt: null,
+    sourceUrl: "https://www.ecfr.gov/current/title-15/part-734/section-734.9",
+    handTranscribed: true,
+    note: FDP_PROVENANCE.transcribedNotParsed,
+    rebuildCommand: "node scripts/validate-fdp-rules.mjs (validates; does not regenerate)"
   }
 ];
 
@@ -56,22 +87,31 @@ export function datasetProvenance(ids = DATASETS.map((d) => d.id)) {
   const chosen = DATASETS.filter((d) => ids.includes(d.id));
   const ages = chosen.map((d) => daysSince(d.retrievedAt)).filter((n) => n !== null);
   const oldest = ages.length ? Math.max(...ages) : null;
+  const anyStale = chosen.some(
+    (d) => (daysSince(d.retrievedAt) ?? 0) > (d.staleAfterDays ?? STALE_AFTER_DAYS)
+  );
   return {
-    datasets: chosen.map((d) => ({
-      id: d.id,
-      citation: d.citation,
-      ecfrIssueDate: d.ecfrIssueDate,
-      retrievedAt: d.retrievedAt,
-      ageDays: daysSince(d.retrievedAt),
-      stale: (daysSince(d.retrievedAt) ?? 0) > STALE_AFTER_DAYS,
-      rebuildCommand: d.rebuildCommand
-    })),
+    datasets: chosen.map((d) => {
+      const threshold = d.staleAfterDays ?? STALE_AFTER_DAYS;
+      const age = daysSince(d.retrievedAt);
+      return {
+        id: d.id,
+        citation: d.citation,
+        ecfrIssueDate: d.ecfrIssueDate,
+        ...(d.sourceGeneratedAt ? { sourceGeneratedAt: d.sourceGeneratedAt } : {}),
+        ...(d.handTranscribed ? { handTranscribed: true, note: d.note } : {}),
+        retrievedAt: d.retrievedAt,
+        ageDays: age,
+        staleAfterDays: threshold,
+        stale: (age ?? 0) > threshold,
+        rebuildCommand: d.rebuildCommand
+      };
+    }),
     oldestSnapshotAgeDays: oldest,
-    stale: oldest !== null && oldest > STALE_AFTER_DAYS,
-    warning:
-      oldest !== null && oldest > STALE_AFTER_DAYS
-        ? `At least one dataset snapshot is ${oldest} days old. The EAR is amended frequently; rebuild the datasets and re-run before relying on this output.`
-        : null,
+    stale: anyStale,
+    warning: anyStale
+      ? "At least one dataset snapshot has exceeded its staleness threshold. The EAR is amended frequently and restricted-party lists change weekly; rebuild and re-run before relying on this output."
+      : null,
     verifyAgainst:
       "Regenerated data is only as current as the eCFR issue date shown. For a legally operative answer, read the Federal Register for amendments published after that date."
   };

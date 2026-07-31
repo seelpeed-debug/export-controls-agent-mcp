@@ -16,10 +16,13 @@ node_modules/
 # Generated verification output (regenerate with: node verify/run-verification.mjs)
 verify/verification-report.json
 
-# Scratch files from data-source investigation
+# Scratch files and raw source caches from data-source investigation.
+# The raw Consolidated Screening List download is ~32 MB; only the reduced
+# snapshot in src/data/screening-list.json belongs in the repository.
 verify/*.xml
 verify/*.txt
 verify/law-raw-*.json
+verify/csl-raw.json
 
 # OS noise
 Thumbs.db

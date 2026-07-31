@@ -602,12 +602,15 @@ export function analyzeLicenseExceptions(input) {
       citation: "15 C.F.R. § 734.9",
       requirement: "Foreign Direct Product (FDP) rules",
       note:
-        "Not modelled by this tool. A foreign-made item with no U.S. content can still be subject to the EAR under the Entity List FDP, Advanced Computing FDP or SME FDP rules. This matters for Korean-manufactured items shipped without any U.S.-origin parts."
+        "Run assess_ear_jurisdiction. A foreign-made item with no U.S. content can still be subject to the EAR under the Entity List, Advanced Computing or SME FDP rules, which matters for Korean-manufactured items shipped without any U.S.-origin parts. Items caught by an FDP rule frequently have sharply reduced exception eligibility at the licence provision that rule cites.",
+      tool: "assess_ear_jurisdiction"
     },
     {
       citation: "15 C.F.R. § 734.4",
       requirement: "De minimis",
-      note: "Not modelled by this tool. Determines whether a foreign-made item is subject to the EAR by U.S.-content value."
+      note:
+        "Run assess_ear_jurisdiction. Determines whether a foreign-made item is subject to the EAR by controlled U.S.-content value. Passing de minimis does not answer the FDP question.",
+      tool: "assess_ear_jurisdiction"
     },
     {
       citation: "15 C.F.R. § 748.15 and Supplement No. 7 to Part 748",

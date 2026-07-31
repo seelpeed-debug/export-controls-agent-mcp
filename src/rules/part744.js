@@ -21,6 +21,7 @@ import {
 } from "../lib/countries.js";
 import { normalizeEccn, isEar99, parseEccn, expandParagraphList, matchAnySpec, eccnCategoryGroup } from "../lib/eccn.js";
 import { matchTerms } from "../lib/text-match.js";
+import { screenParty, screeningProvenance, SCREENING_LIMITS } from "../lib/screening.js";
 
 export const PART744_PROVENANCE = Object.freeze({
   countryGroups: COUNTRY_GROUP_PROVENANCE,
@@ -176,11 +177,39 @@ export function checkPart744(input) {
   // Restricted-party status. This is the single most common source of a
   // Part 744 licence requirement and the tool cannot determine it.
   // ---------------------------------------------------------------------
+  // Actually screen the names we were given against the bundled Consolidated
+  // Screening List. This used to be a caller-asserted boolean only.
+  const namesToScreen = [
+    ...(endUser ? [endUser] : []),
+    ...(Array.isArray(input.additionalParties) ? input.additionalParties.filter(Boolean) : [])
+  ];
+  const screeningResults = namesToScreen.map((n) => {
+    const r = screenParty(n, { country: dest.resolved ? dest.canonical : null, minScore: 60 });
+    return {
+      party: n,
+      usable: r.usable,
+      matchCount: r.matchCount,
+      // >=85 is treated as a probable identification and blocks. 70-84 is a red
+      // flag to resolve but must not, on its own, turn a clean transaction into
+      // "significant issues" -- partial name overlap is common and benign.
+      strongMatches: r.matches.filter((m) => m.score >= 85),
+      possibleMatches: r.matches.filter((m) => m.score >= 70 && m.score < 85),
+      lowConfidenceMatches: r.matches.filter((m) => m.score < 70)
+    };
+  });
+  const strongHits = screeningResults.flatMap((r) =>
+    r.strongMatches.map((m) => ({ party: r.party, ...m }))
+  );
+  const weakHits = screeningResults.flatMap((r) =>
+    r.possibleMatches.map((m) => ({ party: r.party, ...m }))
+  );
+
   const screeningPerformed = endUserScreening.screeningPerformed === true;
   const listed =
     endUserScreening.listedOnEntityList ||
     endUserScreening.listedOnMeuList ||
-    endUserScreening.sdnListed;
+    endUserScreening.sdnListed ||
+    strongHits.length > 0;
   const ownershipPct = Number.isFinite(endUserScreening.ownershipPercentByListedEntity)
     ? endUserScreening.ownershipPercentByListedEntity
     : null;
@@ -188,15 +217,55 @@ export function checkPart744(input) {
     endUserScreening.ownedFiftyPercentOrMoreByListedEntity === true ||
     (ownershipPct !== null && ownershipPct >= 50);
 
-  if (listed) {
+  if (strongHits.length > 0) {
+    for (const h of strongHits) {
+      issues.push({
+        citation: h.authority.citation ?? "Consolidated Screening List",
+        rule: `Screening hit on the ${h.listCode ?? "listed"} list: "${h.name}"`,
+        requirement: h.licenceRequirement ?? h.authority.effect,
+        effect: h.authority.effect,
+        detail:
+          `Party screened: "${h.party}" matched "${h.name}"` +
+          (h.matchedAlias ? ` via the alias "${h.matchedOn}"` : "") +
+          ` at confidence ${h.score}/100 (${h.basis}).` +
+          (h.licencePolicy ? ` Licence review policy: ${h.licencePolicy}` : "") +
+          (h.countries.length ? ` Listed address country: ${h.countries.join(", ")}.` : "") +
+          (h.countryNote ? ` ${h.countryNote}.` : ""),
+        federalRegisterNotice: h.federalRegisterNotice,
+        sourceListUrl: h.sourceListUrl,
+        actionRequired:
+          "Confirm the identity against the official list entry before acting on this. A name match is not an identification.",
+        severity: "blocking"
+      });
+    }
+  } else if (listed) {
     issues.push({
       citation: "15 C.F.R. § 744.16 (Entity List); § 744.21(b)(1) (MEU List); § 744.8 (SDN)",
-      rule: "Listed party is a party to the transaction",
+      rule: "Listed party is a party to the transaction (asserted by the caller)",
       requirement:
         "A licence is required to the extent stated in the List Requirement column of the entry.",
       effect:
         "Per § 744.16(b), NO License Exception is available for a listed Entity List party for the specified items, apart from the narrow § 740.2(a)(5) civil-aviation carve-out for certain Indian and Pakistani entities and entities listed under § 744.20.",
       severity: "blocking"
+    });
+  }
+
+  if (weakHits.length > 0) {
+    issues.push({
+      citation: "15 C.F.R. Part 732, Supplement No. 3 (Red Flags)",
+      rule: `${weakHits.length} possible screening match(es) below the confidence threshold`,
+      requirement:
+        "Resolve each partial match against the official list entry. A partial name match is a red flag that must be resolved, not dismissed.",
+      detail: weakHits
+        .slice(0, 8)
+        .map(
+          (h) =>
+            `"${h.party}" ~ "${h.name}" [${h.listCode}] ${h.score}/100` +
+            (h.matchedAlias ? ` via alias "${h.matchedOn}"` : "") +
+            ` (${h.basis})`
+        )
+        .join("; "),
+      severity: "medium"
     });
   }
 
@@ -230,13 +299,18 @@ export function checkPart744(input) {
   if (!screeningPerformed) {
     issues.push({
       citation: "15 C.F.R. § 744.16, § 744.15, § 744.21(b), § 744.8; 15 C.F.R. Part 732 Supplement No. 3",
-      rule: "Restricted-party screening has NOT been performed by this tool",
+      rule:
+        namesToScreen.length > 0
+          ? `Screening is incomplete: ${namesToScreen.length} name(s) were checked against the bundled list, but a transaction has more parties than one name`
+          : "No party name was supplied, so nothing was screened",
       requirement:
-        "Screen the end user, ultimate consignee, intermediate consignees, purchaser, freight forwarders, banks and all listed addresses against the Entity List (Supplement No. 4 to Part 744), MEU List (Supplement No. 7), Unverified List (Supplement No. 6) and the OFAC SDN List.",
+        "Screen the end user, ultimate consignee, intermediate consignees, purchaser, freight forwarders, banks and all listed ADDRESSES, and trace ownership to apply the 50 percent affiliates rule.",
       effect:
         "Until this is done, no part of this output may be treated as indicating that the transaction is permissible.",
       detail:
-        "This server holds no restricted-party data. Ownership must also be traced to apply the 50 percent affiliates rule; if ownership cannot be determined, § 744.21(a)(3) requires resolving the red flag or obtaining a licence before proceeding (see Red Flag 29, Supplement No. 3 to Part 732).",
+        "Two gaps that name screening cannot close. (1) Ownership is not in the Consolidated Screening List, so an unlisted entity owned 50 percent or more by a listed parent never appears as a hit; if ownership cannot be determined, § 744.21(a)(3) requires resolving the red flag or obtaining a licence first (Red Flag 29, Supplement No. 3 to Part 732). (2) An Entity List entry can attach to an ADDRESS rather than a named party.",
+      actionRequired:
+        "Set endUserScreening.screeningPerformed once every party and address has been screened and ownership traced.",
       severity: "blocking"
     });
   }
@@ -599,10 +673,11 @@ export function checkPart744(input) {
       appliesTo: "Every transaction."
     },
     {
-      citation: "15 C.F.R. § 734.9",
+      citation: "15 C.F.R. § 734.9 and § 734.4",
       requirement:
-        "Assess the Foreign Direct Product rules separately. Entity List FDP, Advanced Computing FDP and SME FDP can make a foreign-made item with no U.S. content subject to the EAR.",
-      appliesTo: "Korean-manufactured items in particular; not modelled by this tool."
+        "Confirm the item is subject to the EAR in the first place by running assess_ear_jurisdiction. The Entity List, Advanced Computing and SME FDP rules can make a foreign-made item with no U.S. content subject to the EAR, and Part 744 only bites once the item is within the EAR.",
+      appliesTo: "Korean-manufactured items in particular.",
+      tool: "assess_ear_jurisdiction"
     },
     {
       citation: "15 C.F.R. § 748.15 and Supplement No. 7 to Part 748",
@@ -678,6 +753,14 @@ export function checkPart744(input) {
       isMacauOrD5: macauOrD5
     },
     inputGaps,
+    screening: {
+      partiesScreened: namesToScreen,
+      results: screeningResults,
+      strongMatchCount: strongHits.length,
+      possibleMatchCount: weakHits.length,
+      provenance: screeningProvenance(),
+      limits: SCREENING_LIMITS
+    },
     issuesToReview: issues,
     unansweredQuestions,
     countryContext: context,

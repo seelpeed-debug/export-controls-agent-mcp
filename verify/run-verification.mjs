@@ -307,6 +307,84 @@ await call("T9.16", "check_part744_enduse", {
   flags: { advancedNodeProduction: "maybe" }
 }, true);
 
+// ============ 10. restricted-party screening ==============================
+await call("T10.1", "screen_restricted_party", {
+  names: ["Semiconductor Manufacturing International (Beijing) Corporation"]
+});
+await call("T10.2", "screen_restricted_party", { names: ["SMIC"], minScore: 60 });
+await call("T10.3", "screen_restricted_party", {
+  names: ["Samsung Electronics Co., Ltd.", "SK hynix Inc.", "Tokyo Electron Limited"]
+});
+await call("T10.4", "screen_restricted_party", {
+  names: ["Huawei Technologies Co., Ltd."],
+  listCodes: ["EL"],
+  maxResults: 5
+});
+await call("T10.5", "screen_restricted_party", { names: ["Yangtze Memory"], country: "China" });
+await call("T10.6", "screen_restricted_party", { names: [] }, true);
+await call("T10.7", "check_part744_enduse", {
+  destinationCountry: "China",
+  endUser: "Semiconductor Manufacturing International (Beijing) Corporation",
+  eccn: "3B001.f.1",
+  endUserScreening: { screeningPerformed: true }
+});
+await call("T10.8", "check_part744_enduse", {
+  destinationCountry: "Japan",
+  endUser: "Clean Buyer KK",
+  additionalParties: ["Huawei Technologies Co., Ltd."],
+  eccn: "EAR99",
+  endUserScreening: { screeningPerformed: true }
+});
+
+// ============ 11. EAR jurisdiction: de minimis and FDP ====================
+// The headline case: a Korean-built etcher with zero U.S. content.
+await call("T11.1", "assess_ear_jurisdiction", {
+  destinationCountry: "China",
+  foreignItemEccn: "3B001.c",
+  producedUsingUsTechnologyEccns: ["3E992"],
+  usControlledContentPercent: 0
+});
+await call("T11.2", "assess_ear_jurisdiction", {
+  destinationCountry: "Japan",
+  foreignItemEccn: "3B001.c",
+  producedUsingUsTechnologyEccns: ["3E992"],
+  usControlledContentPercent: 0
+});
+await call("T11.3", "assess_ear_jurisdiction", {
+  destinationCountry: "China",
+  foreignItemEccn: "3B002.b",
+  producedByPlantThatIsDirectProductOfUsTechnology: true,
+  recipientAtAdvancedNodeFacilityInMacauOrD5: true
+});
+await call("T11.4", "assess_ear_jurisdiction", {
+  destinationCountry: "Vietnam",
+  foreignItemEccn: "3A090.a",
+  producedUsingUsTechnologyEccns: ["3D001"]
+});
+await call("T11.5", "assess_ear_jurisdiction", {
+  itemOrigin: "us",
+  destinationCountry: "China",
+  foreignItemEccn: "3B001.c"
+});
+await call("T11.6", "assess_ear_jurisdiction", {
+  destinationCountry: "Iran",
+  foreignItemType: "commodity",
+  usControlledContentPercent: 20
+});
+await call("T11.7", "assess_ear_jurisdiction", {
+  destinationCountry: "China",
+  foreignItemEccn: "3B001.c",
+  usControlledContentPercent: 1,
+  noDeMinimisFacts: { containsUsOriginIntegratedCircuit: true }
+});
+await call("T11.8", "assess_ear_jurisdiction", {
+  destinationCountry: "Germany",
+  foreignItemType: "technology",
+  commingledTechnologyReportFiled: false
+});
+await call("T11.9", "assess_ear_jurisdiction", { destinationCountry: "Freedonia" }, false);
+await call("T11.10", "assess_ear_jurisdiction", {}, true);
+
 await client.close();
 
 const outPath = path.join(here, "verification-report.json");

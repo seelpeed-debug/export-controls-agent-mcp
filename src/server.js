@@ -9,6 +9,8 @@ import { classifyEccnCandidates } from "./rules/ccl-search.js";
 import { classifyTransactionRisk } from "./rules/transaction-risk.js";
 import { draftExportControlClause, buildDueDiligenceChecklist } from "./rules/clauses.js";
 import { getKoreanLawArticle } from "./lib/korean-law.js";
+import { screenParty, screeningProvenance, SCREENING_LIMITS } from "./lib/screening.js";
+import { assessEarJurisdiction } from "./rules/jurisdiction.js";
 import { datasetProvenance, checkFreshness, ALL_DATASET_IDS } from "./lib/provenance.js";
 
 const server = new McpServer({
@@ -263,6 +265,12 @@ server.registerTool(
         .describe("Destination country. Matched against 15 C.F.R. Part 740, Supplement No. 1."),
       endUser: z.string().optional().describe("End-user name or description."),
       endUse: z.string().optional().describe("Stated end-use."),
+      additionalParties: z
+        .array(z.string())
+        .optional()
+        .describe(
+          "Other named parties to screen: ultimate consignee, intermediate consignees, purchaser, freight forwarders, banks."
+        ),
       eccn: z
         .string()
         .optional()
@@ -331,7 +339,65 @@ server.registerTool(
         .optional()
     }
   },
-  async (input) => asJson(checkPart744(input), ["country-groups"])
+  async (input) => asJson(checkPart744(input), ["country-groups", "screening-list"])
+);
+
+server.registerTool(
+  "screen_restricted_party",
+  {
+    title: "Screen a party against the Consolidated Screening List",
+    description:
+      "Screen one or more party names against the U.S. Consolidated Screening List bundled with this server: BIS Entity List, Denied Persons List, Unverified List and MEU List; OFAC SDN, SSI, CMIC, NS-MBS, PLC and Capta; State ITAR Debarred and Nonproliferation Sanctions. Returns ranked candidate matches with the operative licence requirement and the authority for each list. A no-match result is NOT clearance: ownership is not screened, so the 50 percent affiliates rule under 744.21(a)(3) can catch an unlisted entity that produces no hit here.",
+    inputSchema: {
+      names: z.array(z.string()).min(1).describe("Party names to screen."),
+      country: z
+        .string()
+        .optional()
+        .describe("Destination or party country. Used only to annotate matches, never to exclude them."),
+      minScore: z
+        .number()
+        .int()
+        .min(30)
+        .max(100)
+        .default(60)
+        .describe("Confidence floor, 0-100. Lower it for transliterated or non-Latin-script names."),
+      maxResults: z.number().int().min(1).max(200).default(25),
+      listCodes: z
+        .array(z.enum(["EL", "DPL", "UVL", "MEU", "SDN", "CMIC", "SSI", "NS-MBS", "PLC", "CAP", "DTC", "ISN"]))
+        .optional()
+        .describe("Restrict to specific lists. Omit to screen against all of them.")
+    }
+  },
+  async ({ names, country, minScore, maxResults, listCodes }) => {
+    const results = names.map((n) => screenParty(n, { country, minScore, maxResults, listCodes }));
+    const strong = results.flatMap((r) => r.matches.filter((m) => m.score >= 85));
+    return asJson(
+      {
+        toolContract:
+          "Ranked candidate matches, not identifications. Confirm any hit against the official list entry, and do not read a zero-match result as clearance.",
+        screened: names.length,
+        results,
+        summary: {
+          partiesWithStrongMatch: results.filter((r) => r.matches.some((m) => m.score >= 85)).length,
+          partiesWithPossibleMatch: results.filter((r) =>
+            r.matches.some((m) => m.score >= 60 && m.score < 85)
+          ).length,
+          partiesWithNoMatch: results.filter((r) => r.matchCount === 0).length,
+          strongMatchLists: [...new Set(strong.map((m) => m.listCode))]
+        },
+        provenance: screeningProvenance(),
+        limits: SCREENING_LIMITS,
+        nextSteps: [
+          "For every hit, open the sourceListUrl and confirm identity against the official entry. Names repeat across unrelated companies.",
+          "Trace the ownership chain of each party. A party owned 50 percent or more by a listed entity inherits its restrictions under § 744.21(a)(3) and will not appear here.",
+          "Screen the addresses as well; Entity List entries can attach to an address.",
+          "Screen non-U.S. designations separately: this dataset covers U.S. lists only.",
+          "Record the screening date, the snapshot vintage, who reviewed it and the disposition of each hit."
+        ]
+      },
+      ["screening-list"]
+    );
+  }
 );
 
 server.registerTool(
@@ -367,6 +433,98 @@ server.registerTool(
     }
   },
   async (input) => asJson(analyzeLicenseExceptions(input), ["country-groups", "license-exception-catalog"])
+);
+
+server.registerTool(
+  "assess_ear_jurisdiction",
+  {
+    title: "Assess whether an item is subject to the EAR",
+    description:
+      "Determine whether an item is subject to the EAR before doing any classification or licence analysis. Applies the de minimis U.S.-content rule (15 C.F.R. 734.4) and all thirteen Foreign Direct Product rules (734.9) as independent routes. The FDP rules have NO percentage test: a foreign-produced item with zero U.S. content is subject to the EAR if a rule's product scope and destination or end-user scope are both met. The SME rule at 734.9(k) and the Footnote 5 rule at 734.9(e)(3) are the ones that reach Korean-manufactured semiconductor equipment.",
+    inputSchema: {
+      itemOrigin: z
+        .enum(["us", "foreign"])
+        .default("foreign")
+        .describe("U.S.-origin items are subject to the EAR under 734.3 and need no further jurisdiction analysis."),
+      destinationCountry: z.string().describe("Destination country, matched against Part 740 Supplement No. 1."),
+      foreignItemEccn: z
+        .string()
+        .optional()
+        .describe("The foreign-produced item's own ECCN with subparagraph, e.g. 3B001.c, 3A090.a, or EAR99."),
+      foreignItemType: z.enum(["commodity", "software", "technology"]).default("commodity"),
+
+      producedUsingUsTechnologyEccns: z
+        .array(z.string())
+        .optional()
+        .describe(
+          "ECCNs of the U.S.-origin technology or software used to PRODUCE the item, e.g. ['3E992']. This is the single most decisive input for FDP and is about production inputs, not the item's own content."
+        ),
+      producedUsingUsTechnologyInAnyDorE: z
+        .boolean()
+        .optional()
+        .describe("Set when production used U.S.-origin technology or software in any product group D or E ECCN."),
+      producedByPlantThatIsDirectProductOfUsTechnology: z
+        .boolean()
+        .optional()
+        .describe(
+          "Whether the producing plant, or a major component of it, is itself a direct product of U.S.-origin technology or software."
+        ),
+      containsIcFromSuchPlant: z
+        .boolean()
+        .optional()
+        .describe(
+          "Whether the commodity contains an integrated circuit produced by such a plant. IC production here includes assembly, testing and packaging. Relevant to 734.9(e)(3) and (k)."
+        ),
+
+      entityListFootnotes: z
+        .array(z.number().int())
+        .optional()
+        .describe("Entity List footnote designations of any party, e.g. [1], [4], [5]. Footnote 3 is Russia/Belarus MEU."),
+      entityListFootnotesKnown: z
+        .boolean()
+        .optional()
+        .describe("Set true once every party's footnote status has actually been checked on the Entity List."),
+      recipientAtAdvancedNodeFacilityInMacauOrD5: z
+        .boolean()
+        .optional()
+        .describe("Recipient is at a facility in Macau or Country Group D:5 producing logic or DRAM advanced-node ICs."),
+      forSupercomputerInPrcOrMacau: z.boolean().optional(),
+      destinedToCrimea: z.boolean().optional(),
+      governmentOfIranIsAParty: z.boolean().optional(),
+
+      usControlledContentPercent: z
+        .number()
+        .min(0)
+        .max(100)
+        .optional()
+        .describe("Controlled U.S.-origin content as a percentage, calculated under Supplement No. 2 to Part 734."),
+      usSoftwareBundled: z
+        .boolean()
+        .optional()
+        .describe("For software: whether it ships bundled with the item. Separately exported U.S. software is never de minimis eligible."),
+      category5Part2UsContent: z.boolean().optional(),
+      commingledTechnologyReportFiled: z
+        .boolean()
+        .optional()
+        .describe("Whether the one-time BIS report for commingled technology has been filed. Required before relying on de minimis for technology."),
+      noDeMinimisFacts: z
+        .object({
+          highApppComputerWithUsSemiconductors: z.boolean().optional(),
+          incorporates5E002EncryptionTechnology: z.boolean().optional(),
+          is3B993f1ForAdvancedNodeProduction: z.boolean().optional(),
+          commingles9E003Technology: z.boolean().optional(),
+          isMilitaryCommodityWith0A919: z.boolean().optional(),
+          incorporates9x515Or600Series: z.enum(["enumerated", "y_items"]).optional(),
+          containsUsOriginIntegratedCircuit: z.boolean().optional()
+        })
+        .optional()
+        .describe("Facts bearing on the 734.4(a) categories that have no de minimis level at all."),
+
+      skipDeMinimis: z.boolean().default(false),
+      skipFdp: z.boolean().default(false)
+    }
+  },
+  async (input) => asJson(assessEarJurisdiction(input), ["country-groups", "ccl"])
 );
 
 server.registerTool(
