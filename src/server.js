@@ -94,56 +94,94 @@ server.registerTool(
   "regime_overview",
   {
     title: "Summarize export-control regimes",
-    description: "Return a Korean legal research overview of EAR, BIS Entity List, EU Regulation 2021/821, and Korean Foreign Trade Act touchpoints.",
+    description:
+      "Orientation map of the export-control regimes that bear on a Korean semiconductor or battery transaction, and — importantly — which of them this server actually models against the regulation text versus merely flags for manual review. Read the coverageInThisServer field of each regime before relying on any other tool.",
     inputSchema: {
       focus: z.string().optional().describe("Research focus, e.g. semiconductor equipment exports to China or battery technology licensing.")
     }
   },
   async ({ focus = "Korean semiconductor and battery companies" }) => asJson({
     focus,
+    coverageLegend: {
+      modelled:
+        "Evaluated against bundled snapshots of the regulation text, with citations and a data vintage.",
+      partial: "Some provisions modelled, others only pointed at. See the notes.",
+      pointer_only:
+        "This server holds NO data for this regime and performs NO analysis of it. It only reminds you that the regime may apply. Do not read any output as covering it."
+    },
     regimes: [
       {
         name: "U.S. Export Administration Regulations (EAR)",
-        legalTouchpoints: [
-          "15 C.F.R. Parts 730-774",
-          "subject to the EAR analysis",
-          "ECCN and Commerce Control List classification",
-          "end-use and end-user controls under Part 744",
-          "reexport and transfer(in-country) controls"
+        coverageInThisServer: "partial",
+        modelledParts: [
+          "Part 734 — § 734.4 de minimis and all thirteen § 734.9 Foreign Direct Product rules (assess_ear_jurisdiction)",
+          "Part 740 — License Exceptions and the § 740.2 mandatory restrictions (analyze_license_exceptions)",
+          "Part 740 Supplement No. 1 — Country Groups",
+          "Part 744 — end-use and end-user controls, including the 50 percent affiliates rule (check_part744_enduse)",
+          "Part 774 Supplement No. 1 — Commerce Control List text search (classify_eccn)"
         ],
-        transactionRelevance: "Determines whether U.S.-origin items, software, technology, or certain foreign-produced items trigger U.S. authorization requirements."
+        notModelledParts: [
+          "Part 736 general prohibitions",
+          "Part 738 Commerce Country Chart — so no tool here determines whether a licence is required for a given ECCN and destination",
+          "Part 742 licence requirements and review policy",
+          "Part 746 embargoes and other special controls",
+          "Parts 748, 758, 762, 764 — applications, clearance, recordkeeping, enforcement"
+        ],
+        transactionRelevance:
+          "Determines whether U.S.-origin items, software, technology, or certain foreign-produced items trigger U.S. authorization requirements."
       },
       {
-        name: "BIS Entity List",
-        legalTouchpoints: [
-          "Supplement No. 4 to Part 744 of the EAR",
-          "license requirement and license review policy by listed entity",
-          "restricted-party screening before contract, shipment, payment, and technical support"
+        name: "U.S. restricted-party lists",
+        coverageInThisServer: "modelled",
+        modelledParts: [
+          "Consolidated Screening List: BIS Entity List, Denied Persons, Unverified and MEU; OFAC SDN, SSI, CMIC, NS-MBS, PLC, Capta; State ITAR Debarred and Nonproliferation Sanctions (screen_restricted_party)"
         ],
-        transactionRelevance: "Turns counterparty status into a contract-performance risk, including suspension, termination, and indemnity issues."
+        notModelledParts: [
+          "Ownership. The Consolidated Screening List contains no ownership data, so the 50 percent affiliates rule cannot be discharged by name screening",
+          "Address-based Entity List entries",
+          "Non-U.S. designations (EU, UK, Japan, Korea)"
+        ],
+        transactionRelevance:
+          "Turns counterparty status into a contract-performance risk, including suspension, termination, and indemnity issues."
       },
       {
-        name: "EU Regulation 2021/821",
-        legalTouchpoints: [
-          "dual-use items including software and technology",
-          "export, brokering, technical assistance, transit, and transfer",
-          "catch-all controls and recordkeeping"
+        name: "EU Regulation 2021/821 (dual-use)",
+        coverageInThisServer: "pointer_only",
+        modelledParts: [],
+        notModelledParts: [
+          "Annex I control list — not bundled, so this server cannot classify an item under EU law",
+          "EU authorisation types, catch-all controls, brokering and technical assistance provisions",
+          "Member State implementing measures"
         ],
-        transactionRelevance: "Applies to EU touchpoints such as EU subsidiaries, EU-origin items, technical assistance, and brokering services."
+        whatThisServerActuallyDoes:
+          "Flags that an EU touchpoint exists (EU subsidiary, EU-origin item, EU technical assistance, brokering or transit) and reminds you to review the Regulation. Nothing more.",
+        transactionRelevance:
+          "Applies to EU touchpoints such as EU subsidiaries, EU-origin items, technical assistance, and brokering services.",
+        source: OFFICIAL_SOURCES.euDualUse
       },
       {
-        name: "Korean Foreign Trade Act",
-        legalTouchpoints: [
-          "Article 19 strategic items designation",
-          "Article 20 expert classification ruling",
-          "export, transit, transshipment, brokering, and catch-all authorization",
-          "Article 53 criminal penalties"
+        name: "Korean Foreign Trade Act (대외무역법)",
+        coverageInThisServer: "partial",
+        modelledParts: [
+          "Full current article text of 대외무역법 and 국제사법, with promulgation and per-article effective dates (get_korean_law_article)"
         ],
-        transactionRelevance: "Provides directly applicable Korean authorization, classification, and penalty structure."
+        notModelledParts: [
+          "전략물자수출입고시 — the Korean control list itself is NOT bundled. This server cannot determine whether an item is a 전략물자, which is usually a Korean exporter's first question. Use the KOSTI (무역안보관리원) 전략물자관리시스템 or apply for a 전문판정 under Article 20"
+        ],
+        legalTouchpoints: [
+          "제19조 — designation and publication of 전략물자 by the Minister of Trade and Industry",
+          "제19조의2 — 수출허가 (export authorisation), including intangible technology transfer. Added by the 2024-02-20 전문개정, which split the former 제19조",
+          "제19조의3 — 상황허가 (situational authorisation / catch-all), with its enumerated red-flag list",
+          "제20조 — 전문판정 (expert classification ruling), which may be delegated to 무역안보관리원",
+          "제53조 — criminal penalties, which now cross-reference 제19조의2 and 제19조의3"
+        ],
+        transactionRelevance:
+          "Provides directly applicable Korean authorization, classification, and penalty structure. Note that Korean designations do not track the U.S. CCL, so a U.S. ECCN answer does not settle Korean status."
       }
     ],
     officialSources: OFFICIAL_SOURCES,
-    caution: "This tool produces research support, not a final legal opinion. Verify current law and lists before relying on outputs."
+    caution:
+      "Research support, not a legal opinion. Where coverageInThisServer is 'pointer_only' or a provision appears under notModelledParts, this server has performed no analysis at all and its silence carries no meaning."
   })
 );
 

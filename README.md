@@ -2,12 +2,28 @@
 
 Local MCP server for export-control legal research and transaction-risk analysis, focused on Korean semiconductor and secondary-battery companies.
 
-It supports research and drafting around:
+## Coverage
 
-- U.S. EAR (15 C.F.R. Parts 730–774), including Part 740 License Exceptions and Part 744 end-use and end-user controls
-- The Commerce Control List
-- EU Regulation 2021/821
-- The Korean Foreign Trade Act (대외무역법) and Act on Private International Law (국제사법)
+The line between what is modelled from the regulation text and what is merely flagged for manual review matters more than the feature list, so it comes first. The `regime_overview` tool reports the same split at runtime.
+
+**Modelled** — evaluated against bundled snapshots of the regulation, with citations and a data vintage:
+
+| Area | Provision |
+| --- | --- |
+| EAR jurisdiction | § 734.4 de minimis, all thirteen § 734.9 Foreign Direct Product rules |
+| License Exceptions | Part 740, including the § 740.2 mandatory restrictions |
+| Country Groups | Part 740 Supplement No. 1 |
+| End-use / end-user | Part 744, including the 50 percent affiliates rule |
+| Commerce Control List | Part 774 Supplement No. 1, text search over all 633 entries |
+| Restricted parties | U.S. Consolidated Screening List, 25,921 parties across 12 lists |
+| Korean statutes | 대외무역법 and 국제사법, full current article text |
+
+**Not modelled** — the server holds no data and performs no analysis; it only raises these as issues to check:
+
+- **Commerce Country Chart (Part 738).** No tool here determines whether a licence is actually required for a given ECCN and destination. That remains a manual step.
+- **EU Regulation 2021/821.** Annex I is not bundled. The server flags that an EU touchpoint exists and reminds you to review the Regulation. It cannot classify an item under EU law or analyse EU authorisations.
+- **전략물자수출입고시, the Korean control list.** The statute text is bundled; the control list is not. So the server cannot tell you whether an item is a 전략물자, which is usually a Korean exporter's first question. Use the KOSTI 전략물자관리시스템 or apply for a 전문판정 under Article 20.
+- **Part 742 licence requirements, Part 746 embargoes, Parts 748/758/762/764.** Cited where relevant, not evaluated.
 
 ## What this server does and does not do
 
@@ -97,7 +113,9 @@ On Windows, escape the backslashes: `"C:\\\\path\\\\to\\\\export-controls-agent-
 
 ### `regime_overview`
 
-Summarises EAR, BIS Entity List, EU Regulation 2021/821 and Korean Foreign Trade Act touchpoints.
+Orientation map of the regimes bearing on a transaction, and which of them this server actually models. Each regime carries a `coverageInThisServer` value of `modelled`, `partial` or `pointer_only`, plus explicit `modelledParts` and `notModelledParts` lists. Worth calling first, because it tells the reader where the server's silence means nothing.
+
+Also records that the 2024-02-20 전문개정 split the former 대외무역법 제19조 into 제19조 (designation), 제19조의2 (수출허가, including intangible technology transfer) and 제19조의3 (상황허가).
 
 ### `classify_transaction_risk`
 
@@ -184,7 +202,15 @@ Covers term matching and negation, the Part 740 and Part 744 gating logic, CCL s
 
 ## Limitations
 
-This server is a research assistant, not a restricted-party screening database and not a source of legal advice. It does not guarantee that its bundled snapshots reflect the law in force. Verify every output against official sources, and have export-control counsel confirm any conclusion before shipment.
+This server is a research assistant, not a source of legal advice. It does not guarantee that its bundled snapshots reflect the law in force. Verify every output against official sources, and have export-control counsel confirm any conclusion before shipment.
+
+Three limits are structural rather than incidental, and no amount of further work on this server removes them:
+
+- **Ownership is invisible to name screening.** The 50 percent affiliates rule under § 744.21(a)(3) reaches entities that appear on no list. Only a traced ownership chain answers it.
+- **FDP turns on production facts.** Most § 734.9 prongs depend on which U.S.-origin technology or software was used to make the item. Only the manufacturer knows that, which is why § 734.9(a)(2) supplier certifications exist.
+- **Part 744 turns on knowledge, including reason to know.** A structured input cannot capture a red flag that a human noticed in a conversation.
+
+See the [Coverage](#coverage) section for what is modelled and what is only flagged. Where something is listed as not modelled, this server has performed no analysis of it and its silence carries no meaning.
 
 Official sources:
 
