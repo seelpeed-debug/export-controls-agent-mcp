@@ -7,7 +7,7 @@
     "format": "XML"
   },
   "ecfrIssueDate": "2026-07-23",
-  "retrievedAt": "2026-07-31T00:33:39.332Z",
+  "retrievedAt": "2026-07-31T14:01:42.999Z",
   "notes": {
     "macau": "Macau is NOT in Country Group D:5. The EAR writes 'Macau or a destination specified in Country Group D:5' throughout, so any rule keyed only on D:5 must add Macau explicitly.",
     "d5Controlling": "Per the note to Country Group D:5, if this table conflicts with the State Department's arms-embargo notices (22 CFR 126.1 and Federal Register), the State Department list controls.",
