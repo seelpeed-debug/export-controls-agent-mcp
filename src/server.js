@@ -2,6 +2,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { createRequire } from "node:module";
 import { z } from "zod";
 import { checkPart744 } from "./rules/part744.js";
 import { analyzeLicenseExceptions } from "./rules/license-exceptions.js";
@@ -11,11 +12,17 @@ import { draftExportControlClause, buildDueDiligenceChecklist } from "./rules/cl
 import { getKoreanLawArticle } from "./lib/korean-law.js";
 import { screenParty, screeningProvenance, SCREENING_LIMITS } from "./lib/screening.js";
 import { assessEarJurisdiction } from "./rules/jurisdiction.js";
+import { assessCountryChartRequirement } from "./rules/country-chart.js";
 import { datasetProvenance, checkFreshness, ALL_DATASET_IDS } from "./lib/provenance.js";
+
+// Read the version from package.json rather than repeating it. It was hardcoded
+// as "0.1.0" and stayed there through the 0.2.0 release, so the server advertised
+// a version it was not running.
+const { version: SERVER_VERSION } = createRequire(import.meta.url)("../package.json");
 
 const server = new McpServer({
   name: "export-controls-agent-mcp",
-  version: "0.1.0"
+  version: SERVER_VERSION
 });
 
 const OFFICIAL_SOURCES = {
@@ -115,16 +122,16 @@ server.registerTool(
         coverageInThisServer: "partial",
         modelledParts: [
           "Part 734 — § 734.4 de minimis and all thirteen § 734.9 Foreign Direct Product rules (assess_ear_jurisdiction)",
+          "Part 738 — the Commerce Country Chart and the § 738.4(a)(2) determination procedure, including the § 738.3(b) territory inheritance rule and the § 738.3(a)(1) entries that bypass the chart (determine_license_requirement)",
           "Part 740 — License Exceptions and the § 740.2 mandatory restrictions (analyze_license_exceptions)",
           "Part 740 Supplement No. 1 — Country Groups",
           "Part 744 — end-use and end-user controls, including the 50 percent affiliates rule (check_part744_enduse)",
           "Part 774 Supplement No. 1 — Commerce Control List text search (classify_eccn)"
         ],
         notModelledParts: [
-          "Part 736 general prohibitions",
-          "Part 738 Commerce Country Chart — so no tool here determines whether a licence is required for a given ECCN and destination",
-          "Part 742 licence requirements and review policy",
-          "Part 746 embargoes and other special controls",
+          "Part 736 general prohibitions. § 738.4(a)(2)(ii)(B) makes the absence of a Country Chart requirement conditional on General Prohibitions Four through Ten not applying, so a 'no_chart_requirement' result is never clearance",
+          "Part 742 licence review policy, and the § 742 provisions that some ECCN entries cite instead of a chart column",
+          "Part 746 embargoes and other special controls. The four embargoed destinations are identified but their requirements are not modelled",
           "Parts 748, 758, 762, 764 — applications, clearance, recordkeeping, enforcement"
         ],
         transactionRelevance:
@@ -436,6 +443,29 @@ server.registerTool(
       ["screening-list"]
     );
   }
+);
+
+server.registerTool(
+  "determine_license_requirement",
+  {
+    title: "Determine whether the CCL requires a licence",
+    description:
+      "Work the Commerce Country Chart (15 C.F.R. Part 738, Supplement No. 1) for an ECCN and a destination, following the 738.4(a)(2) procedure. Reads every Reason for Control in the entry, resolves each to a chart column or to the prose destination scope the entry states instead, and reports each requirement separately because 738.4(a)(2)(ii)(A) requires each one to be overcome on its own. Handles the cases a table lookup misses: the four embargoed destinations whose rows carry no marks at all, the footnotes that require a licence where the grid is empty, destinations that have no row and inherit another country's, and the 738.3(a)(1) entries that bypass the chart entirely. An absent mark is reported as 'no_chart_requirement', never as clearance.",
+    inputSchema: {
+      eccn: z
+        .string()
+        .describe(
+          "ECCN, ideally with subparagraph, e.g. 3B001.c, 3A090.a, 0A501.y. Rows in one entry are scoped to different subparagraphs and resolve differently, so a bare 3B001 will return a conditional answer."
+        ),
+      destination: z
+        .string()
+        .describe(
+          "Destination country. Matched against the rows of Supplement No. 1 to Part 738, whose spellings differ from the Part 740 Country Group tables. Hong Kong resolves to the China row."
+        )
+    }
+  },
+  async ({ eccn, destination }) =>
+    asJson(assessCountryChartRequirement({ eccn, destination }), ["country-chart", "ccl", "country-groups"])
 );
 
 server.registerTool(

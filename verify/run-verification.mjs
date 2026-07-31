@@ -385,6 +385,38 @@ await call("T11.8", "assess_ear_jurisdiction", {
 await call("T11.9", "assess_ear_jurisdiction", { destinationCountry: "Freedonia" }, false);
 await call("T11.10", "assess_ear_jurisdiction", {}, true);
 
+// --- T12: Commerce Country Chart (Part 738) -------------------------------
+// Each case has an answer that can be checked against the regulation by hand.
+await call("T12.1", "determine_license_requirement", { eccn: "1C010.a", destination: "Japan" });
+await call("T12.2", "determine_license_requirement", { eccn: "1C010.a", destination: "China" });
+await call("T12.3", "determine_license_requirement", { eccn: "3B001.b", destination: "China" });
+await call("T12.4", "determine_license_requirement", { eccn: "3B001.c", destination: "China" });
+await call("T12.5", "determine_license_requirement", { eccn: "3B001.c", destination: "Japan" });
+await call("T12.6", "determine_license_requirement", { eccn: "3B001", destination: "China" });
+await call("T12.7", "determine_license_requirement", { eccn: "3A090.a", destination: "Vietnam" });
+await call("T12.8", "determine_license_requirement", { eccn: "3A090.c", destination: "Vietnam" });
+await call("T12.9", "determine_license_requirement", { eccn: "5A002", destination: "Japan" });
+// No graded mark for Australia, but footnote 10 still requires a licence.
+await call("T12.10", "determine_license_requirement", { eccn: "0A501", destination: "Australia" });
+// An embargoed destination: no marks at all, and that means nothing permissive.
+await call("T12.11", "determine_license_requirement", { eccn: "1C010.a", destination: "Iran" });
+await call("T12.12", "determine_license_requirement", { eccn: "1C010.a", destination: "Cuba" });
+// Hong Kong has no row and takes China's under 85 FR 83788.
+await call("T12.13", "determine_license_requirement", { eccn: "3B001.c", destination: "Hong Kong" });
+// A dependent territory inheriting under 738.3(b).
+await call("T12.14", "determine_license_requirement", { eccn: "1C010.a", destination: "Cayman Islands" });
+// 738.3(a)(1): bypasses the chart, all destinations, no exceptions at all.
+await call("T12.15", "determine_license_requirement", { eccn: "0A983", destination: "Germany" });
+await call("T12.16", "determine_license_requirement", { eccn: "5A980", destination: "Germany" });
+// Footnote 7 preserves an RS Column 2 requirement for India.
+await call("T12.17", "determine_license_requirement", { eccn: "6A003.b.4.b", destination: "India" });
+await call("T12.18", "determine_license_requirement", { eccn: "EAR99", destination: "China" });
+await call("T12.19", "determine_license_requirement", { eccn: "1C010.a", destination: "Freedonia" });
+await call("T12.20", "determine_license_requirement", { eccn: "not-an-eccn", destination: "China" });
+await call("T12.21", "determine_license_requirement", {}, true);
+// The exception tool must now carry the licence determination with it.
+await call("T12.22", "analyze_license_exceptions", { eccn: "1C010.a", destinationCountry: "Japan" });
+
 await client.close();
 
 const outPath = path.join(here, "verification-report.json");

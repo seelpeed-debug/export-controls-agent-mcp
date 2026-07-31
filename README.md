@@ -11,6 +11,7 @@ The line between what is modelled from the regulation text and what is merely fl
 | Area | Provision |
 | --- | --- |
 | EAR jurisdiction | § 734.4 de minimis, all thirteen § 734.9 Foreign Direct Product rules |
+| Licence requirement | Part 738 Commerce Country Chart and the § 738.4(a)(2) procedure, with the § 738.3(b) territory rule and the § 738.3(a)(1) entries that bypass the chart |
 | License Exceptions | Part 740, including the § 740.2 mandatory restrictions |
 | Country Groups | Part 740 Supplement No. 1 |
 | End-use / end-user | Part 744, including the 50 percent affiliates rule |
@@ -20,7 +21,7 @@ The line between what is modelled from the regulation text and what is merely fl
 
 **Not modelled** — the server holds no data and performs no analysis; it only raises these as issues to check:
 
-- **Commerce Country Chart (Part 738).** No tool here determines whether a licence is actually required for a given ECCN and destination. That remains a manual step.
+- **General Prohibitions Four through Ten (Part 736).** This matters directly to the Country Chart result. Under § 738.4(a)(2)(ii)(B), an absent mark means no licence is required *only if* those prohibitions do not apply and the entry does not refer you elsewhere. A `no_chart_requirement` answer is therefore never clearance.
 - **EU Regulation 2021/821.** Annex I is not bundled. The server flags that an EU touchpoint exists and reminds you to review the Regulation. It cannot classify an item under EU law or analyse EU authorisations.
 - **전략물자수출입고시, the Korean control list.** The statute text is bundled; the control list is not. So the server cannot tell you whether an item is a 전략물자, which is usually a Korean exporter's first question. Use the KOSTI 전략물자관리시스템 or apply for a 전문판정 under Article 20.
 - **Part 742 licence requirements, Part 746 embargoes, Parts 748/758/762/764.** Cited where relevant, not evaluated.
@@ -55,17 +56,18 @@ The server bundles dated snapshots of the regulation text rather than hardcoded 
 | Dataset | Source | Rebuild |
 | --- | --- | --- |
 | Country Groups (Part 740, Supp. No. 1) | eCFR XML | `npm run data:country-groups` |
+| Commerce Country Chart (Part 738, Supp. No. 1) | eCFR XML | `npm run data:country-chart` |
 | License Exception catalog (Part 740) | eCFR XML | `npm run data:part740` |
 | Commerce Control List (Part 774, Supp. No. 1) | eCFR XML | `npm run data:ccl` |
 | Consolidated Screening List (25,921 parties, 12 lists) | trade.gov bulk download, no API key | `npm run data:screening` |
 | § 734.9 FDP rule scopes (13 rules) | transcribed from eCFR | `npm run validate:fdp` (validates, does not regenerate) |
 | 대외무역법 / 국제사법 full text | law.go.kr Open API | `npm run data:korean-law` |
 
-Rebuild the three EAR datasets together with `npm run data:rebuild`.
+Rebuild the EAR datasets together with `npm run data:rebuild`, which finishes by running the validators.
 
 Two properties worth knowing:
 
-- Each builder asserts facts verified against the regulation and refuses to write a dataset that fails them, so a change in the upstream document structure fails loudly instead of silently producing wrong compliance data.
+- Each builder asserts facts verified against the regulation and refuses to write a dataset that fails them, so a change in the upstream document structure fails loudly instead of silently producing wrong compliance data. The Country Chart builder refuses outright if the 16 column identifiers change, because every rule in the CCL names them by string.
 - A builder that finds nothing substantively changed leaves the file alone rather than bumping its `retrievedAt` stamp. That keeps the git history meaningful: a commit touching `src/data/` means the regulation moved, not merely that someone re-ran the script. Pass `--force` to rewrite regardless.
 
 The screening snapshot has its own, much shorter staleness threshold of **7 days**, because restricted-party lists change by Federal Register notice rather than by quarterly amendment. The other snapshots use 30 days.
@@ -165,9 +167,28 @@ Lists Part 744 issues: military end use (§ 744.21) including the 50 percent aff
 
 Screens `endUser` and `additionalParties` against the Consolidated Screening List automatically, and reports a strong hit as a blocking issue with its licence requirement. It still blocks on incomplete screening, because one name is not a transaction and ownership is not in the list.
 
+### `determine_license_requirement`
+
+Works the Commerce Country Chart for an ECCN and a destination, following § 738.4(a)(2). Reads every Reason for Control in the entry and resolves each one to a chart column or to the prose destination scope the entry states instead. Only 1260 of the 1545 License Requirements rows in the CCL name a column; the rest say things like "To or within any destination worldwide" or "To or within Macau or a destination specified in Country Group D:5", so a column-only reading would return nothing for 3A090 and for 3B001.c.
+
+Each requirement is reported separately, because § 738.4(a)(2)(ii)(A) requires each one to be overcome on its own.
+
+Four things a table lookup gets wrong, all handled here:
+
+- **Cuba, Iran, North Korea and Syria carry no marks at all.** Their rows point to Part 746 instead. An empty row is reported as `embargo_destination`, never as an absence of requirements.
+- **The footnotes create requirements the grid does not show.** Australia's row is empty apart from CB 1, yet footnote 10 still requires a licence for a list of firearms entries. Ask about `0A501` to Australia and the footnote fires.
+- **Some destinations have no row.** Hong Kong's was removed by 85 FR 83788 and is governed by the China entry; under § 738.3(b) a dependent territory takes its parent's row. A destination that is neither a row nor one of the inheritance cases the EAR names comes back `indeterminate_input`, not clear.
+- **Some entries bypass the chart.** § 738.3(a)(1) requires a licence to all destinations for 0A983, 5A980 and others, with no License Exception at all for some of them.
+
+Rows are scoped to subparagraphs, so `3B001.b` resolves cleanly while a bare `3B001` returns a conditional answer and asks which subparagraph applies. Where a row's scope is a physical description — "shotguns with a barrel length less than 18 inches" — no ECCN string can decide it, and the row is reported as conditional rather than dropped.
+
+Statuses are `license_required`, `no_chart_requirement`, `requires_verification`, `embargo_destination`, `indeterminate_input` and `out_of_scope`. `no_chart_requirement` is not clearance; see the Coverage note on General Prohibitions Four through Ten.
+
 ### `analyze_license_exceptions`
 
 Applies the mandatory restrictions in § 740.2 — including § 740.2(a)(9)(i), under which semiconductor manufacturing equipment and its associated software and technology going to Macau or Country Group D:5 has no License Exception available other than GOV — then reports each exception's status and the conditions it would require.
+
+Carries a `licenceRequirement` block from the Country Chart, because an exception exists to overcome a licence requirement and an exception analysis with nothing to overcome is moot. Where the chart produces more than one requirement, the block says so: a single exception has to defeat all of them.
 
 ### `draft_export_control_clause`
 
@@ -231,7 +252,17 @@ A commit touching `src/data/` should mean the regulation actually moved. The bui
 npm test
 ```
 
-Covers term matching and negation, the Part 740 and Part 744 gating logic, CCL search behaviour, the risk and clause tiering, and Korean statute retrieval. `npm run validate:vocabulary` additionally asserts that every regulation-side search term actually occurs in the bundled CCL, so a search key that would silently return nothing fails instead.
+Nine suites, covering term matching and negation, the Part 738 chart determination, the Part 740 and Part 744 gating logic, § 734 jurisdiction, CCL search behaviour, screening, the risk and clause tiering, Korean statute retrieval, and the honesty of the coverage claims in this README and in `regime_overview`.
+
+```powershell
+npm run validate
+```
+
+Three validators, which check assumptions no snapshot can catch:
+
+- `validate:vocabulary` asserts every regulation-side search term actually occurs in the bundled CCL, so a search key that would silently return nothing fails instead.
+- `validate:fdp` re-reads § 734.9 and confirms the thirteen hand-transcribed rule scopes still match the section.
+- `validate:country-chart` confirms every prose destination scope the chart evaluator recognises still appears in the CCL. This is the one that matters most: if BIS rewords a scope such as "To or within any destination worldwide", the pattern stops matching, the affected rows quietly become unreadable, and the tool silently stops reporting a licence requirement it used to catch. It also pins the number of unreadable rows, which may fall but not rise, and re-reads § 738.3 and § 738.4 against the live eCFR.
 
 ## Limitations
 

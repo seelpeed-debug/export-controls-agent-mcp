@@ -24,6 +24,7 @@ import {
   COUNTRY_GROUP_NOTES
 } from "../lib/countries.js";
 import { normalizeEccn, isEar99, parseEccn, expandParagraphList, matchAnySpec } from "../lib/eccn.js";
+import { assessCountryChartRequirement } from "./country-chart.js";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
@@ -405,7 +406,7 @@ export function analyzeLicenseExceptions(input) {
     scopeNote:
       "TSR is § 740.6, 'Technology and software under restriction'. It is not the same as TSU (§ 740.13), and it applies to NS-only controlled items -- not to AT-only controlled items.",
     conditions: [
-      "Confirm the Commerce Country Chart shows a licence requirement for this destination for NATIONAL SECURITY reasons ONLY. If any other reason for control (NP, CB, MT, RS, EI, SI) also applies, TSR is unavailable.",
+      "Confirm the Commerce Country Chart shows a licence requirement for this destination for NATIONAL SECURITY reasons ONLY. If any other reason for control (NP, CB, MT, RS, EI, SI) also applies, TSR is unavailable. The licenceRequirement block in this output lists every requirement the chart produced; check that NS is the only entry in requirementsToOvercome.",
       "Confirm the ECCN entry states 'TSR—Yes'.",
       "Confirm the destination is in Country Group B and is not Sudan or Ukraine.",
       "Obtain the written assurance required by § 740.6(a)(1) (technology) or § 740.6(a)(2) (software) from the importer BEFORE export. Without it TSR does not apply and a licence is required.",
@@ -620,6 +621,48 @@ export function analyzeLicenseExceptions(input) {
     }
   ];
 
+  // --- Is a licence even required? -----------------------------------------
+  // 738.4(a)(2)(ii)(A) puts this first: an exception exists to overcome a
+  // licence requirement, so an exception analysis with no requirement to
+  // overcome is moot. It also tells the reader WHICH requirements an exception
+  // has to defeat, because each one must be overcome on its own.
+  const chart = assessCountryChartRequirement({ eccn: normalized, destination: destinationCountry });
+  const requirementsToOvercome = (chart.requirements ?? [])
+    .filter((r) => r.determination === "license_required")
+    .map((r) => ({
+      reason: r.reason,
+      reasonName: r.reasonName,
+      columns: (r.columns ?? []).filter((c) => c.marked).map((c) => c.column),
+      basis: r.path === "prose" ? r.proseScopeDescription : "an X in the Commerce Country Chart"
+    }));
+
+  const licenceRequirement = {
+    citation: chart.citation,
+    status: chart.status,
+    summary: chart.summary,
+    ...(requirementsToOvercome.length ? { requirementsToOvercome } : {}),
+    conjunctive:
+      requirementsToOvercome.length > 1
+        ? "There is more than one requirement. Under 738.4(a)(2)(ii)(A) a single exception must cover every one of them, or a licence is needed."
+        : null,
+    ...(chart.status === "no_chart_requirement"
+      ? {
+          note:
+            "No Country Chart column requires a licence here, so no List Based License Exception is needed on that ground. That is not clearance: read the caveats, and Part 744 and Part 746 are evaluated by other tools.",
+          caveats: chart.caveats
+        }
+      : {}),
+    ...(chart.status === "embargo_destination" ? { embargo: chart.destination?.embargoPointer ?? null } : {}),
+    ...(chart.footnotes ?? []).some((f) => f.mayApplyToThisEccn)
+      ? {
+          footnotesThatMayRequireALicence: chart.footnotes
+            .filter((f) => f.mayApplyToThisEccn)
+            .map((f) => ({ number: f.number, text: f.text }))
+        }
+      : {},
+    fullAnalysisTool: "determine_license_requirement"
+  };
+
   // --- Conclusion ----------------------------------------------------------
   const forReview = candidates.filter((c) => c.status === "requires_verification");
   const foreclosed = candidates.filter((c) => c.status === "foreclosed");
@@ -642,10 +685,27 @@ export function analyzeLicenseExceptions(input) {
       `A mandatory Part 740 restriction applies (${foreclosedBy.map((g) => g.citation).join(", ")}). ` +
       `${foreclosed.length} exception(s) are foreclosed on these facts. ` +
       `${forReview.length} remain worth examining, and each still requires its own conditions to be satisfied.`;
+  } else if (chart.status === "embargo_destination") {
+    statement =
+      `${destinationCountry} is an embargoed destination with no graded row in the Commerce Country Chart. ` +
+      "Exception availability there is governed by Part 746, which this tool does not model. Treat the candidate list as unusable until Part 746 has been read.";
+  } else if (chart.status === "no_chart_requirement") {
+    statement =
+      `The Commerce Country Chart imposes no licence requirement for ${normalized || "this item"} to ${destinationCountry} on the entry's Reasons for Control, ` +
+      "so no List Based License Exception is needed on that ground. Confirm Part 744, Part 746 and General Prohibitions Four through Ten before treating the shipment as NLR.";
+  } else if (requirementsToOvercome.length) {
+    statement =
+      `A licence is required on ${requirementsToOvercome.map((r) => r.reason).join(" and ")}. ` +
+      (requirementsToOvercome.length > 1
+        ? "Every one of those requirements must be overcome by the same exception, or a licence is needed. "
+        : "") +
+      `${forReview.length} exception(s) are worth examining. ` +
+      "This tool does not determine eligibility: each candidate's conditions must be confirmed against the ECCN entry and the exception text.";
   } else {
     statement =
       `${forReview.length} exception(s) are worth examining for this fact pattern. ` +
-      "This tool does not determine eligibility: each candidate's conditions must be confirmed against the ECCN entry, the Commerce Country Chart and the exception text.";
+      "Whether a licence is required at all was not settled from this input; see licenceRequirement. " +
+      "This tool does not determine eligibility: each candidate's conditions must be confirmed against the ECCN entry and the exception text.";
   }
 
   return {
@@ -672,6 +732,7 @@ export function analyzeLicenseExceptions(input) {
       note: dest.isMacau ? COUNTRY_GROUP_NOTES.macau : null
     },
     inputGaps,
+    licenceRequirement,
     mandatoryRestrictions: gates,
     restrictionsNotModelled: unmodelled,
     exceptionsToReview: forReview,
@@ -690,10 +751,11 @@ export function analyzeLicenseExceptions(input) {
     conclusion: { type: "issues_identified", statement },
     nextSteps: [
       "Resolve every item in inputGaps before relying on any part of this output.",
-      "Work through mandatoryRestrictions first; they override per-exception analysis.",
+      "Read licenceRequirement first. If the Commerce Country Chart requires no licence, no List Based License Exception is needed on that ground; if it requires more than one, a single exception must overcome all of them.",
+      "Work through mandatoryRestrictions next; they override per-exception analysis.",
       "For each exception in exceptionsToReview, read the ECCN entry's List Based License Exceptions block and the exception text, and record which condition was satisfied by what evidence.",
       "Run check_part744_enduse and confirm Part 744 does not independently require a licence.",
-      "Assess § 734.9 FDP and § 734.4 de minimis separately; neither is modelled here.",
+      "Run assess_ear_jurisdiction for § 734.9 FDP and § 734.4 de minimis; neither is modelled here.",
       "Have export-control counsel confirm any conclusion before shipment."
     ]
   };

@@ -1,5 +1,97 @@
 # Changelog
 
+## 0.3.0 — 2026-07-31
+
+Models the Commerce Country Chart, so the server now answers the question it
+previously had to hand back: does the CCL require a licence for this ECCN to
+this destination?
+
+### Added
+
+**`determine_license_requirement`** — Part 738, following the § 738.4(a)(2)
+procedure. Reads every Reason for Control in the entry, resolves each to a chart
+column or to the prose destination scope the entry states instead, and reports
+each requirement separately because § 738.4(a)(2)(ii)(A) requires each to be
+overcome on its own.
+
+Only 1260 of the 1545 License Requirements rows in the CCL name a chart column.
+The rest state their scope in prose — "To or within any destination worldwide",
+"To or within Macau or a destination specified in Country Group D:5", "China,
+Russia, or Venezuela". A column-only implementation returns nothing for 3A090
+and for 3B001.c, which is the same class of false-permissive answer this project
+spent 0.2.0 removing. Both paths are evaluated, and 13 of 1545 rows remain
+unreadable, all of them a known CCL parsing defect in 2E003 plus three cells
+that are empty in the source.
+
+Four cases a table lookup gets wrong:
+
+| Case | What a naive lookup returns | What the regulation says |
+| --- | --- | --- |
+| Any ECCN → **Iran, Cuba, North Korea, Syria** | no marks found, so no requirement | those rows carry no marks *at all* and point to Part 746 instead |
+| **0A501 → Australia** | Australia's row is empty apart from CB 1 | footnote 10 still requires a licence for a list of firearms entries |
+| **Anything → Hong Kong** | no such row | BIS removed it (85 FR 83788); the China entry governs |
+| **0A983 → anywhere** | no rows in the entry | § 738.3(a)(1) requires a licence to all destinations, with no License Exception at all |
+
+Rows are scoped to subparagraphs, so `3B001.b` resolves cleanly to NS Column 2
+with the other four rows reported as out of scope, while a bare `3B001` returns
+a conditional answer and asks which subparagraph applies. Where a row's scope is
+a physical description — "shotguns with a barrel length less than 18 inches" —
+no ECCN string can decide it, and the row is reported as conditional rather than
+dropped.
+
+An absent mark is reported as `no_chart_requirement`, never as clearance.
+§ 738.4(a)(2)(ii)(B) makes it conditional on General Prohibitions Four through
+Ten not applying, and that condition travels with the answer.
+
+### Fixed — Hong Kong escaped every Country Group rule
+
+`country-groups.json` aliased `"hong kong"` to a row label `"Hong Kong"` that no
+longer exists, because BIS removed Hong Kong as a separate destination in 2020.
+Group membership lookups therefore came back empty, and a Hong Kong destination
+passed silently through every rule keyed on a Country Group — including the D:5
+gate in the Foreign Direct Product rules and in § 740.2(a)(9)(i). It now resolves
+to China, and so to D:1, D:3, D:4 and D:5.
+
+The builder now refuses to write the dataset if any alias points at a label that
+is not a row. That check is what found this.
+
+### Fixed — the server advertised the wrong version
+
+`version` was hardcoded as `"0.1.0"` in `src/server.js` and stayed there through
+the 0.2.0 release. It is read from `package.json` now.
+
+### Fixed — a coverage test that passed for the wrong reason
+
+`check-coverage-claims.mjs` asserted that the Country Chart was listed as *not*
+modelled, matching on a bare `/738/`. After Part 738 became modelled the
+assertion kept passing, because a different not-modelled line cites
+§ 738.4(a)(2)(ii)(B). It now tests the claim rather than the digits, and also
+asserts that the General Prohibitions condition stays disclosed — modelling the
+chart makes a new overclaim available, namely that an absent mark is clearance.
+
+### Changed
+
+`analyze_license_exceptions` carries a `licenceRequirement` block from the chart.
+An exception exists to overcome a licence requirement, so an exception analysis
+with nothing to overcome is moot, and the tool now says so instead of listing
+candidates in a vacuum. Where the chart produces more than one requirement, the
+block states that a single exception must defeat all of them.
+
+`regime_overview` moves Part 738 from `notModelledParts` to `modelledParts`, and
+adds Part 736 to the not-modelled list with the reason it matters: it is the
+condition on every `no_chart_requirement` answer.
+
+### Why this is still not 1.0.0
+
+Closing the Country Chart gap removes one of the three reasons given in 0.2.0.
+Two remain, and modelling Part 738 exposed a third:
+
+- **EU Regulation 2021/821** is still pointer-only. Annex I is not bundled.
+- **전략물자수출입고시**, the Korean control list, is still not bundled.
+- **Part 736, Part 742 and Part 746 are not modelled**, and a Country Chart
+  answer is incomplete without them. This server cannot produce a final licence
+  determination on its own.
+
 ## 0.2.0 — 2026-07-31
 
 First version fit for research use. Every tool changed shape, so this is a

@@ -203,9 +203,6 @@ const failures = [
     .filter(([g, c]) => groups[g]?.includes(c))
     .map(([g, c]) => `${c} should NOT be in ${g} but is`)
 ];
-if (failures.length) {
-  throw new Error("sanity check failed, refusing to write dataset: " + failures.join("; "));
-}
 
 // Common input spellings -> the exact row labels used by Supplement No. 1.
 // Hand-maintained: the regulation gives no alias table.
@@ -217,7 +214,18 @@ const ALIASES = {
   "mainland china": "China (PRC)",
   macao: "Macau",
   "macau sar": "Macau",
-  "hong kong": "Hong Kong",
+  // Hong Kong is NOT a row in this supplement. BIS removed it as a separate
+  // destination effective 23 December 2020 (85 FR 83788), so it takes China's
+  // treatment and is therefore in D:1, D:3, D:4 and D:5.
+  //
+  // This entry previously read "hong kong" -> "Hong Kong", which resolved to a
+  // row that does not exist. Membership lookups then came back empty and a Hong
+  // Kong destination silently escaped every rule keyed on a Country Group --
+  // including the D:5 gate in the Foreign Direct Product rules. Mapping it to
+  // the row that actually governs is the fix.
+  "hong kong": "China (PRC)",
+  "hong kong sar": "China (PRC)",
+  hk: "China (PRC)",
   "south korea": "Korea, South",
   "republic of korea": "Korea, South",
   "korea, republic of": "Korea, South",
@@ -244,6 +252,23 @@ const ALIASES = {
   "czechia": "Czech Republic",
   "viet nam": "Vietnam"
 };
+
+// An alias that points at a label which is not a row in this supplement resolves
+// to nothing, and a destination that resolves to nothing escapes every rule keyed
+// on a Country Group. That is a silent permissive failure, so it is fatal here.
+// This check is what caught "hong kong" -> "Hong Kong" after BIS removed the
+// Hong Kong row.
+const allRowLabels = new Set(Object.values(groups).flat());
+const danglingAliases = Object.entries(ALIASES)
+  .filter(([, target]) => !allRowLabels.has(target))
+  .map(([input, target]) => `"${input}" -> "${target}" (not a row in this supplement)`);
+failures.push(...danglingAliases);
+
+if (failures.length) {
+  throw new Error(
+    "sanity check failed, refusing to write dataset:\n  - " + failures.join("\n  - ")
+  );
+}
 
 const payload = {
   $comment:

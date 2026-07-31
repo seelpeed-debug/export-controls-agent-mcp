@@ -1,0 +1,3069 @@
+{
+  "$comment": "GENERATED FILE -- do not edit by hand. Regenerate with: node scripts/build-country-chart.mjs",
+  "citation": "15 C.F.R. Part 738, Supplement No. 1 (Commerce Country Chart)",
+  "source": {
+    "url": "https://www.ecfr.gov/api/versioner/v1/full/2026-07-23/title-15.xml?part=738",
+    "api": "eCFR versioner v1",
+    "format": "XML"
+  },
+  "ecfrIssueDate": "2026-07-23",
+  "retrievedAt": "2026-07-31T15:33:36.659Z",
+  "procedure": {
+    "citation": "15 C.F.R. 738.4(a)(2)",
+    "steps": [
+      "Identify every Reason for Control in the ECCN and the Country Chart column each one names.",
+      "For each column, check whether an X appears in the cell for the destination.",
+      "An X means a licence is required for that reason and destination unless a License Exception applies.",
+      "Each affirmative requirement must be overcome separately; one exception covering one reason is not enough."
+    ],
+    "noMarkCaveat": "738.4(a)(2)(ii)(B): no X means no licence is required on that reason for control and destination ONLY IF General Prohibitions Four through Ten do not apply and the ECCN's License Requirements section does not refer you elsewhere in the EAR. It is not a conclusion that the transaction is permitted.",
+    "notAllEntriesUseTheChart": "738.4(a)(1): some ECCNs state their licence requirements in full or refer to another provision instead of naming a column."
+  },
+  "notes": {
+    "embargoedRows": "Cuba, Iran, North Korea and Syria have no marks at all. Their rows point to Part 746 (and 742.19 for North Korea). Absence of an X for these destinations carries no permissive meaning whatsoever.",
+    "hongKong": "Hong Kong has no row. Under 85 FR 83788 it is governed by the China entry, and it is likewise absent from the Part 740 Country Group tables because it is no longer a separate destination.",
+    "footnotesAreSubstantive": "The footnotes impose requirements the grid does not show. Footnote 10 is the only thing in this supplement that requires a licence for the listed firearms entries to Australia and the United Kingdom, whose graded rows are almost entirely empty.",
+    "columnOrder": "Column order in the source table is CB, NP, NS, MT, RS, FC, CC, AT. Lookups are by column name; the order is recorded only so a restructuring of the table is detected."
+  },
+  "columns": [
+    "CB 1",
+    "CB 2",
+    "CB 3",
+    "NP 1",
+    "NP 2",
+    "NS 1",
+    "NS 2",
+    "MT 1",
+    "RS 1",
+    "RS 2",
+    "FC 1",
+    "CC 1",
+    "CC 2",
+    "CC 3",
+    "AT 1",
+    "AT 2"
+  ],
+  "columnLabels": {
+    "CB 1": "Chemical and biological weapons",
+    "CB 2": "Chemical and biological weapons",
+    "CB 3": "Chemical and biological weapons",
+    "NP 1": "Nuclear nonproliferation",
+    "NP 2": "Nuclear nonproliferation",
+    "NS 1": "National security",
+    "NS 2": "National security",
+    "MT 1": "Missile tech",
+    "RS 1": "Regional stability",
+    "RS 2": "Regional stability",
+    "FC 1": "Firearms convention",
+    "CC 1": "Crime control",
+    "CC 2": "Crime control",
+    "CC 3": "Crime control",
+    "AT 1": "Anti- terrorism",
+    "AT 2": "Anti- terrorism"
+  },
+  "countryCount": 196,
+  "countries": {
+    "Afghanistan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Albania": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2"
+      ],
+      "footnotes": [
+        2,
+        3
+      ]
+    },
+    "Algeria": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Andorra": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Angola": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Antigua and Barbuda": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Argentina": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Armenia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Aruba": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Australia": {
+      "marks": [
+        "CB 1"
+      ],
+      "footnotes": [
+        10
+      ]
+    },
+    "Austria": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3,
+        4
+      ]
+    },
+    "Azerbaijan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Bahamas, The": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Bahrain": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Bangladesh": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Barbados": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Belarus": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": [
+        6
+      ]
+    },
+    "Belgium": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Belize": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Benin": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Bhutan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Bolivia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Bosnia and Herzegovina": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Botswana": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Brazil": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Brunei": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Bulgaria": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Burkina Faso": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Burma": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Burundi": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Cambodia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Cameroon": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Canada": {
+      "marks": [
+        "CB 1",
+        "FC 1"
+      ],
+      "footnotes": []
+    },
+    "Cape Verde": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Central African Republic": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Chad": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Chile": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "China": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Colombia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Comoros": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Congo (Democratic Republic of the)": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        1
+      ]
+    },
+    "Congo (Republic of the)": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Costa Rica": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Cote d'Ivoire": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Croatia": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Curaçao": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Cyprus": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        2,
+        3,
+        4
+      ]
+    },
+    "Czech Republic": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Denmark": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Djibouti": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Dominica": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Dominican Republic": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Ecuador": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Egypt": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "El Salvador": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Equatorial Guinea": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Eritrea": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        1
+      ]
+    },
+    "Estonia": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Eswatini": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Ethiopia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Fiji": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Finland": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3,
+        4
+      ]
+    },
+    "France": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Gabon": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Gambia, The": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Georgia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Germany": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Ghana": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Greece": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Grenada": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Guatemala": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Guinea": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Guinea-Bissau": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Guyana": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Haiti": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Honduras": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Hungary": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Iceland": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "India": {
+      "marks": [
+        "CB 1",
+        "NP 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        7
+      ]
+    },
+    "Indonesia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Iraq": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": [
+        1
+      ]
+    },
+    "Ireland": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3,
+        4
+      ]
+    },
+    "Israel": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Italy": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Jamaica": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Japan": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Jordan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Kazakhstan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Kenya": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Kiribati": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Korea, South": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3,
+        4
+      ]
+    },
+    "Kosovo": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Kuwait": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Kyrgyzstan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Laos": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Latvia": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Lebanon": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        1
+      ]
+    },
+    "Lesotho": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Liberia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Libya": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        1
+      ]
+    },
+    "Liechtenstein": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        5
+      ]
+    },
+    "Lithuania": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Luxembourg": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Macau": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Madagascar": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Malawi": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Malaysia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Maldives": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Mali": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Malta": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        2,
+        3,
+        4
+      ]
+    },
+    "Marshall Islands": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Mauritania": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Mauritius": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Mexico": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Micronesia (Federated State of)": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Moldova": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Monaco": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Mongolia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Montenegro": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Morocco": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Mozambique": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Namibia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Nauru": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Nepal": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Netherlands": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "New Zealand": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Nicaragua": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Niger": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Nigeria": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "North Macedonia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Norway": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Oman": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Pakistan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        8
+      ]
+    },
+    "Palau": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Panama": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Papua New Guinea": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Paraguay": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Peru": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Philippines": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Poland": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Portugal": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Qatar": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Romania": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Russia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": [
+        6
+      ]
+    },
+    "Rwanda": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "St. Kitts and Nevis": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "St. Lucia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "St. Vincent and the Grenadines": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Samoa": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "San Marino": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Sao Tome and Principe": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Saudi Arabia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Senegal": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Serbia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Seycheles": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Sierra Leone": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Singapore": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Sint Maarten (the Dutch two-fifths of the island of Saint Martin)": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Slovakia": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Slovenia": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Solomon Islands": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Somalia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        1
+      ]
+    },
+    "South Africa": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NS 1",
+        "MT 1",
+        "RS 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        2,
+        3,
+        4
+      ]
+    },
+    "South Sudan, Republic of": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Spain": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3
+      ]
+    },
+    "Sri Lanka": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Sudan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": [
+        1
+      ]
+    },
+    "Suriname": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Sweden": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3,
+        4
+      ]
+    },
+    "Switzerland": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": [
+        3,
+        4
+      ]
+    },
+    "Taiwan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Tajikistan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Tanzania": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Thailand": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Timor-Leste": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Togo": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Tonga": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Trinidad and Tobago": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Tunisia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Türkiye": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "MT 1",
+        "RS 1"
+      ],
+      "footnotes": []
+    },
+    "Turkmenistan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Tuvalu": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Uganda": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Ukraine": {
+      "marks": [
+        "CB 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": [
+        9
+      ]
+    },
+    "United Arab Emirates": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "United Kingdom": {
+      "marks": [
+        "CB 1"
+      ],
+      "footnotes": [
+        10
+      ]
+    },
+    "Uruguay": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Uzbekistan": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Vanuatu": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Vatican City": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Venezuela": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NP 2",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "FC 1",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Vietnam": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 2"
+      ],
+      "footnotes": []
+    },
+    "Western Sahara": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Yemen": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "CB 3",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Zambia": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    },
+    "Zimbabwe": {
+      "marks": [
+        "CB 1",
+        "CB 2",
+        "NP 1",
+        "NS 1",
+        "NS 2",
+        "MT 1",
+        "RS 1",
+        "RS 2",
+        "CC 1",
+        "CC 3"
+      ],
+      "footnotes": []
+    }
+  },
+  "embargoed": {
+    "Cuba": {
+      "pointer": "See part 746 of the EAR to determine whether a license is required in order to export or reexport to this destination.",
+      "footnotes": []
+    },
+    "Iran": {
+      "pointer": "See part 746 of the EAR to determine whether a license is required in order to export or reexport to this destination.",
+      "footnotes": [
+        1
+      ]
+    },
+    "Korea, North": {
+      "pointer": "See Sections 742.19 and 746.4 of the EAR to determine whether a license is required in order to export or reexport to this destination.",
+      "footnotes": [
+        1
+      ]
+    },
+    "Syria": {
+      "pointer": "See § 746.9 of the EAR to determine whether a license is required in order to export or reexport to this destination.",
+      "footnotes": []
+    }
+  },
+  "footnotes": {
+    "1": "See § 746.1(b) for United Nations Security Council Sanctions under the EAR. See § 746.3 for United Nations Security Council-related license requirements for exports and reexports to Iraq or transfer within Iraq under the EAR, as well as regional stability licensing requirements not included in the Country Chart.",
+    "2": "See § 742.4(a) for special provisions that apply to exports and reexports to these countries of certain thermal imaging cameras.",
+    "3": "See § 742.6(a)(3) for special provisions that apply to military commodities that are subject to ECCN 0A919.",
+    "4": "See § 742.6(a)(2) and (4)(ii) regarding special provisions for exports and reexports of certain thermal imaging cameras to these countries.",
+    "5": "Refer to Switzerland for licensing requirements for Liechtenstein under the EAR.",
+    "6": "See § 746.5 of the EAR for additional license requirements under the Russian Industry Sector Sanctions for ECCNs 0A998, 1C992, 3A229, 3A231, 3A232, 6A991, 8A992, and 8D999 and items identified in supplement no. 2 to part 746 of the EAR. See § 746.8 of the EAR for Sanctions against Russia and Belarus, including additional license requirements for items listed in any ECCN on the CCL.",
+    "7": "Note that a license is still required for items controlled under ECCNs 6A003.b.4.b and 9A515.e for RS column 2 reasons when destined to India.",
+    "8": "See § 746.6 of the EAR for additional license requirements for exports and reexports to the Crimea region of Ukraine and the so-called Donetsk People's Republic (DNR) and Luhansk People's Republic (LNR) regions of Ukraine and transfers (in-country) within the Crimea, DNR, and LNR regions of Ukraine for all items subject to the EAR, other than food and medicine designated as EAR99 and certain EAR99 or ECCN 5D992.c software for internet-based communications.",
+    "9": "See § 746.6 of the EAR for additional license requirements for exports and reexports to the Crimea region of Ukraine and the so-called Donetsk People's Republic (DNR) and Luhansk People's Republic (LNR) regions of Ukraine and transfers (in-country) within the Crimea, DNR, and LNR regions of Ukraine for all items subject to the EAR, other than food and medicine designated as EAR99 and certain EAR99 or ECCN 5D992.c software for internet-based communications.",
+    "10": "A license is required to these destinations for items in the following ECCNs: 0A501 (except for 0A501.y), 0A502 for shotguns with a barrel length less than 18 inches (45.72 cm), 0A504.i, 0A505.a and .x, 0A506, 0A507, 0A508 for semi-automatic shotguns with a barrel length less than 18 inches (45.72 cm), 0A509, 0D501 (except for “software” for commodities in ECCN 0A501.y or “equipment” in ECCN 0B501 for commodities in ECCN 0A501.y), 0D505 for “software” for commodities in ECCN 0A505.a and .x and “equipment” in ECCN 0B505.a and .x, 0E501, 0E504, 0E505 for “technology” for “development,” “production,” operation, installation, maintenance, repair, overhaul, or refurbishing commodities in 0A505.a and .x; for “equipment” for those commodities in 0B505; and for “software” for that “equipment” and those commodities in 0D505."
+  },
+  "aliases": {
+    "china": "China",
+    "china (prc)": "China",
+    "people's republic of china": "China",
+    "prc": "China",
+    "mainland china": "China",
+    "south korea": "Korea, South",
+    "republic of korea": "Korea, South",
+    "korea, republic of": "Korea, South",
+    "rok": "Korea, South",
+    "north korea": "Korea, North",
+    "dprk": "Korea, North",
+    "democratic people's republic of korea": "Korea, North",
+    "myanmar": "Burma",
+    "turkey": "Türkiye",
+    "turkiye": "Türkiye",
+    "cote d'ivoire": "Cote d'Ivoire",
+    "côte d'ivoire": "Cote d'Ivoire",
+    "ivory coast": "Cote d'Ivoire",
+    "uae": "United Arab Emirates",
+    "uk": "United Kingdom",
+    "great britain": "United Kingdom",
+    "britain": "United Kingdom",
+    "russian federation": "Russia",
+    "south sudan": "South Sudan, Republic of",
+    "the bahamas": "Bahamas, The",
+    "bahamas": "Bahamas, The",
+    "the gambia": "Gambia, The",
+    "gambia": "Gambia, The",
+    "congo (democratic republic of)": "Congo (Democratic Republic of the)",
+    "democratic republic of the congo": "Congo (Democratic Republic of the)",
+    "drc": "Congo (Democratic Republic of the)",
+    "republic of the congo": "Congo (Republic of the)",
+    "czechia": "Czech Republic",
+    "viet nam": "Vietnam",
+    "macao": "Macau",
+    "macau sar": "Macau",
+    "seychelles": "Seycheles",
+    "micronesia": "Micronesia (Federated State of)",
+    "federated states of micronesia": "Micronesia (Federated State of)",
+    "sint maarten": "Sint Maarten (the Dutch two-fifths of the island of Saint Martin)",
+    "holy see": "Vatican City",
+    "vatican": "Vatican City",
+    "saint kitts and nevis": "St. Kitts and Nevis",
+    "saint lucia": "St. Lucia",
+    "saint vincent and the grenadines": "St. Vincent and the Grenadines",
+    "east timor": "Timor-Leste",
+    "swaziland": "Eswatini",
+    "macedonia": "North Macedonia",
+    "cabo verde": "Cape Verde",
+    "eswatini": "Eswatini"
+  },
+  "territoryInheritance": {
+    "hong kong": {
+      "row": "China",
+      "basis": "BIS removed the Hong Kong entry from the Commerce Country Chart effective 23 December 2020 (85 FR 83788); licence requirements for Hong Kong are governed by the entry for China."
+    },
+    "liechtenstein": {
+      "row": "Switzerland",
+      "basis": "Footnote 5 to Supplement No. 1 to Part 738, and 738.3(b): Liechtenstein serves as one territory with Switzerland for purposes of the EAR."
+    },
+    "cayman islands": {
+      "row": "United Kingdom",
+      "basis": "738.3(b), which gives the Cayman Islands as its worked example of a dependent territory."
+    }
+  },
+  "territoryInheritanceNote": "738.3(b) states the principle but BIS publishes no exhaustive list. Only the instances the EAR itself names are recorded here. A destination that is neither a row nor listed here must be reported as indeterminate, not as unrestricted.",
+  "allDestinationsEntries": {
+    "citation": "15 C.F.R. 738.3(a)(1)",
+    "note": "A licence is required for all destinations for items controlled under these entries. The Commerce Country Chart does not apply to them.",
+    "noLicenceExceptions": [
+      "0A983",
+      "5E001.a (for 5A001.f.1, or for 5D001.a (for 5A001.f.1))",
+      "5E980"
+    ],
+    "govOnly": {
+      "entries": [
+        "5A001.f.1",
+        "5A980",
+        "5D001 (for 5A001.f.1, or for 5E001.a (for 5A001.f.1 or for 5D001.a (for 5A001.f.1)))",
+        "5D980"
+      ],
+      "condition": "License Exception GOV may apply only if the item is consigned to and for the official use of an agency of the U.S. Government, see 740.2(a)(3)."
+    },
+    "licensingPolicy": "See 742.11 or 742.13 for licensing policy, and part 748 for application instructions."
+  },
+  "oddities": []
+}

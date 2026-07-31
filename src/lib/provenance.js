@@ -11,6 +11,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
 const COUNTRY_GROUPS = require("../data/country-groups.json");
+const COUNTRY_CHART = require("../data/country-chart.json");
 const LICENCE_CATALOG = require("../data/license-exception-catalog.json");
 const CCL = require("../data/ccl.json");
 const SCREENING = require("../data/screening-list.json");
@@ -33,6 +34,14 @@ const DATASETS = [
     retrievedAt: COUNTRY_GROUPS.retrievedAt,
     sourceUrl: COUNTRY_GROUPS.source?.url ?? null,
     rebuildCommand: "node scripts/build-country-groups.mjs"
+  },
+  {
+    id: "country-chart",
+    citation: COUNTRY_CHART.citation,
+    ecfrIssueDate: COUNTRY_CHART.ecfrIssueDate,
+    retrievedAt: COUNTRY_CHART.retrievedAt,
+    sourceUrl: COUNTRY_CHART.source?.url ?? null,
+    rebuildCommand: "node scripts/build-country-chart.mjs"
   },
   {
     id: "license-exception-catalog",

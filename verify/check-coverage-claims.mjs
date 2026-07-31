@@ -45,10 +45,20 @@ t("R2", /\*\*Modelled\*\*/.test(readme) && /\*\*Not modelled\*\*/.test(readme), 
     /전략물자수출입고시/.test(notModelledBlock),
     "the Korean control list gap is disclosed"
   );
+  // The Country Chart used to sit here as a gap. Now that it is modelled, the
+  // README must say so in the Modelled half and must not still be listing it as
+  // absent, while the condition that an absent mark is not clearance stays.
+  const modelledBlock = readme.slice(readme.indexOf("**Modelled**"), readme.indexOf("**Not modelled**"));
+  t("R6", /Part 738/.test(modelledBlock), "the Country Chart is claimed under Modelled");
   t(
-    "R6",
-    /Country Chart/.test(notModelledBlock),
-    "the Part 738 Country Chart gap is disclosed"
+    "R6b",
+    !/Country Chart.*(?:remains a manual step|is not modelled)/s.test(notModelledBlock),
+    "the README must not still describe the Country Chart as a manual step"
+  );
+  t(
+    "R6c",
+    /General Prohibitions Four through Ten|736/.test(notModelledBlock),
+    "the README must disclose that an absent chart mark is not clearance"
   );
 }
 {
@@ -97,11 +107,27 @@ const byName = (frag) => payload.regimes.find((r) => r.name.includes(frag));
   const ear = byName("Export Administration Regulations");
   t("T8", ear.coverageInThisServer === "partial", `coverage=${ear.coverageInThisServer}`);
   t("T9", ear.modelledParts.some((p) => /734\.9/.test(p)), "FDP listed as modelled");
+
+  // Part 738 became modelled. The assertion here used to require it to be listed
+  // as NOT modelled, and it went on passing after the change because a different
+  // not-modelled line cites § 738.4(a)(2)(ii)(B) and matched a bare /738/. Test
+  // the claim, not the digits.
+  t("T10", ear.modelledParts.some((p) => /^Part 738\b/.test(p)), "Country Chart listed as modelled");
   t(
-    "T10",
-    ear.notModelledParts.some((p) => /738/.test(p)),
-    "Country Chart listed as not modelled"
+    "T10b",
+    !ear.notModelledParts.some((p) => /Part 738 Commerce Country Chart/.test(p)),
+    "the stale 'Country Chart not modelled' claim must be gone"
   );
+  // Modelling the chart makes a new overclaim available: that an absent mark is
+  // clearance. 738.4(a)(2)(ii)(B) says it is not, so the condition has to stay
+  // visible in the coverage map.
+  t(
+    "T10c",
+    ear.notModelledParts.some((p) => /General Prohibitions Four through Ten/.test(p)),
+    "the General Prohibitions condition on a no-requirement answer must stay disclosed"
+  );
+  t("T10d", ear.notModelledParts.some((p) => /Part 746/.test(p)), "Part 746 still disclosed as not modelled");
+  t("T10e", ear.notModelledParts.some((p) => /Part 742/.test(p)), "Part 742 still disclosed as not modelled");
 }
 {
   const kr = byName("대외무역법");

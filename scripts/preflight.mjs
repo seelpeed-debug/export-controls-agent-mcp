@@ -125,6 +125,7 @@ section("4. runtime data present and required by the server");
 // ---------------------------------------------------------------------------
 const REQUIRED_DATA = [
   "src/data/country-groups.json",
+  "src/data/country-chart.json",
   "src/data/license-exception-catalog.json",
   "src/data/ccl.json",
   "src/data/screening-list.json",
@@ -145,6 +146,7 @@ const SCREENING_STALE_DAYS = 7;
 const OTHER_STALE_DAYS = 30;
 const vintages = [
   ["src/data/country-groups.json", OTHER_STALE_DAYS],
+  ["src/data/country-chart.json", OTHER_STALE_DAYS],
   ["src/data/license-exception-catalog.json", OTHER_STALE_DAYS],
   ["src/data/ccl.json", OTHER_STALE_DAYS],
   ["src/data/screening-list.json", SCREENING_STALE_DAYS],
