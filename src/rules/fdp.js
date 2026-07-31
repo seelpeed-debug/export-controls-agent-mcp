@@ -507,6 +507,89 @@ export function assessFdp(input) {
     openQuestions.push({ citation: r.citation, name: r.name, unresolved });
   }
 
+  /** A satisfied prong keeps its reason; an unsatisfied one is indexed instead. */
+  const keepIfMet = (prong) =>
+    prong?.state === MET ? { state: prong.state, reason: prong.reason } : { state: prong?.state };
+
+  const compressIndeterminate = (rules) => {
+    // Collect every distinct blocking reason across the indeterminate rules.
+    const reasons = new Map(); // text -> key
+    const keyFor = (text) => {
+      if (!reasons.has(text)) reasons.set(text, `r${reasons.size + 1}`);
+      return reasons.get(text);
+    };
+
+    const compact = rules.map((r) => {
+      const blocking = [];
+      if (r.productScope?.itemScope?.state === UNKNOWN && r.productScope.itemScope.reason) {
+        blocking.push({ prong: "product scope: item", key: keyFor(r.productScope.itemScope.reason) });
+      }
+      for (const route of r.productScope?.inputScope?.routes ?? []) {
+        if (route.state === UNKNOWN && route.reason) {
+          blocking.push({ prong: `product scope: input via ${route.route}`, key: keyFor(route.reason) });
+        }
+      }
+      if (r.reachScope?.state === UNKNOWN && r.reachScope.reason) {
+        blocking.push({ prong: "reach scope", key: keyFor(r.reachScope.reason) });
+      }
+      // Prong detail is worth its bytes only when a prong reached a verdict. When
+      // every prong is unknown -- the case for all thirteen rules if no ECCN and
+      // no production inputs were supplied -- the objects say nothing that
+      // blockedBy has not already said, and thirteen copies of
+      // {state:"indeterminate"} is how a 28 KB answer happens.
+      const prongs = {
+        productScope: {
+          state: r.productScope?.state,
+          itemScope: keepIfMet(r.productScope?.itemScope),
+          inputScope: {
+            ...keepIfMet(r.productScope?.inputScope),
+            unresolvedRoutes: (r.productScope?.inputScope?.routes ?? [])
+              .filter((x) => x.state === UNKNOWN)
+              .map((x) => x.route),
+            metRoute: (r.productScope?.inputScope?.routes ?? []).find((x) => x.state === MET)?.route ?? null
+          }
+        },
+        reachScope: { ...keepIfMet(r.reachScope), type: r.reachScope?.type }
+      };
+      const anyVerdict = [
+        r.productScope?.state,
+        r.productScope?.itemScope?.state,
+        r.productScope?.inputScope?.state,
+        r.reachScope?.state
+      ].some((s) => s === MET || s === NOT_MET);
+
+      return {
+        id: r.id,
+        paragraph: r.paragraph,
+        citation: r.citation,
+        name: r.name,
+        status: r.status,
+        licenceReference: r.licenceReference,
+        // WHICH prong is unresolved is the whole point of an indeterminate rule.
+        // "The item is in scope and only the end user is unknown" is a different
+        // position to "nothing is known", and a reader who cannot tell them apart
+        // cannot prioritise. Keep the two prong verdicts.
+        // A MET prong keeps its reason inline: those are positive findings, there
+        // are few of them, and "the item IS within national security scope" is the
+        // most useful sentence in the record. Only the UNKNOWN prongs go through
+        // the shared index, because those are what repeated verbatim across all
+        // thirteen rules.
+        ...(anyVerdict ? prongs : {}),
+        blockedBy: blocking,
+        // Anything the shared-reason index cannot carry stays on the rule.
+        ...(r.productScope?.itemScope?.matched ? { itemScopeMatched: r.productScope.itemScope.matched } : {}),
+        ...(r.containsIcNote ? { containsIcNote: r.containsIcNote } : {})
+      };
+    });
+
+    return {
+      rulesIndeterminate: compact,
+      indeterminateBecause: Object.fromEntries([...reasons].map(([text, key]) => [key, text])),
+      indeterminateNote:
+        "Each rule lists the prongs blocking it and a key into indeterminateBecause, which states each distinct reason once. A rule reported here has NOT been ruled out."
+    };
+  };
+
   return {
     toolContract:
       "The Foreign Direct Product rules ask whether a FOREIGN-produced item is subject to the EAR. There is no percentage test: an item with zero U.S. content can be caught. A rule reported as indeterminate has NOT been ruled out.",
@@ -535,7 +618,15 @@ export function assessFdp(input) {
       doesNotApply: doesNotApply.length
     },
     rulesApplying: applies,
-    rulesIndeterminate: indeterminate,
+    // An indeterminate rule is blocked by a missing input, and thirteen rules
+    // blocked by the SAME missing input used to repeat the same explanation
+    // thirteen times: 17.7 KB of a 28 KB answer for a request that supplied no
+    // ECCN and no production inputs. The facts are unchanged here, the repetition
+    // is not: each distinct blocking reason is stated once in
+    // `indeterminateBecause`, and each rule names the reasons blocking it.
+    // Rules blocked by something OTHER than a shared gap keep their full detail,
+    // because that detail is what distinguishes them.
+    ...compressIndeterminate(indeterminate),
     rulesNotApplying: doesNotApply.map((r) => ({
       citation: r.citation,
       name: r.name,

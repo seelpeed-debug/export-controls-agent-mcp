@@ -132,8 +132,35 @@ export function assessEarJurisdiction(input) {
       "Treat this as a documented working conclusion, not a clearance: it depends entirely on the completeness of the production-input and end-user facts you supplied, and both § 734.4 and § 734.9 turn on 'knowledge', which includes reason to know.";
   }
 
+  // The FDP open questions restate, per rule, the citation, name and unresolved
+  // prongs that fdp.rulesIndeterminate and fdp.indeterminateBecause already
+  // carry. Copying them here made the same facts appear three times in one
+  // answer. One pointer replaces thirteen duplicates; the detail is unchanged and
+  // one hop away.
+  const fdpOpen = fdp?.openQuestions ?? [];
+  const fdpInputFields = [
+    "foreignItemEccn",
+    "producedUsingUsTechnologyEccns",
+    "producedByPlantThatIsDirectProductOfUsTechnology",
+    "containsIcFromSuchPlant",
+    "entityListFootnotes",
+    "recipientAtAdvancedNodeFacilityInMacauOrD5"
+  ];
   const openQuestions = [
-    ...(fdp?.openQuestions ?? []).map((q) => ({ route: "fdp", ...q })),
+    ...(fdpOpen.length
+      ? [
+          {
+            route: "fdp",
+            citation: "15 C.F.R. § 734.9",
+            question: `${fdpOpen.length} Foreign Direct Product rule(s) could not be resolved on the facts given.`,
+            seeInstead: "fdp.rulesIndeterminate, with each blocking reason stated once in fdp.indeterminateBecause",
+            rules: fdpOpen.map((q) => q.citation),
+            whatWouldResolveThem: fdpInputFields,
+            warning:
+              "A rule listed as indeterminate has NOT been ruled out. The FDP rules have no percentage test, so an item with zero U.S. content can still be caught."
+          }
+        ]
+      : []),
     ...(dmUnknown
       ? [
           {
@@ -168,6 +195,11 @@ export function assessEarJurisdiction(input) {
           summary: fdp.summary,
           rulesApplying: fdp.rulesApplying,
           rulesIndeterminate: fdp.rulesIndeterminate,
+          // The indeterminate rules reference their blocking reasons by key into
+          // this index, so it has to travel with them. Selecting fields by hand
+          // dropped it once and left every key dangling.
+          indeterminateBecause: fdp.indeterminateBecause,
+          indeterminateNote: fdp.indeterminateNote,
           rulesNotApplying: fdp.rulesNotApplying,
           conclusion: fdp.conclusion
         }
