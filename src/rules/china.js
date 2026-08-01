@@ -58,7 +58,7 @@ const RARE_EARTH_TECHNOLOGY_TYPES = Object.freeze([
  * Returns the suspension window as well, because "not operative today" is only
  * half the answer.
  */
-export function measureStatusOn(announcementId, asOfDate) {
+export function measureStatusOn(announcementId, asOfDate, limb = null) {
   const a = ANNOUNCEMENT_BY_ID[announcementId];
   if (!a) return { known: false, announcementId };
   const d = String(asOfDate);
@@ -66,7 +66,17 @@ export function measureStatusOn(announcementId, asOfDate) {
   // A measure cannot be operative before it commences. This is not academic: the
   // November 2025 suspension landed one day before Announcement No. 61's own
   // commencement date, so its extraterritorial limbs have never operated at all.
-  const commences = a.extraterritorialEffectiveFrom ?? a.effectiveFrom ?? a.date;
+  const commences =
+    a.limbEffectiveFrom?.[limb] ??
+    (limb ? a.extraterritorialEffectiveFrom : null) ??
+    a.effectiveFrom ??
+    a.date;
+  const neverOperated =
+    limb && a.neverOperatedLimbs?.includes(limb)
+      ? a.neverOperated
+      : !limb
+        ? a.neverOperated
+        : null;
   if (commences && d < commences) {
     return {
       known: true,
@@ -76,7 +86,7 @@ export function measureStatusOn(announcementId, asOfDate) {
       notYetEffective: true,
       commencesOn: commences,
       basis: `announced ${a.date} but does not commence until ${commences}`,
-      ...(a.neverOperated ? { neverOperated: a.neverOperated } : {})
+      ...(neverOperated ? { neverOperated } : {})
     };
   }
 
@@ -96,7 +106,7 @@ export function measureStatusOn(announcementId, asOfDate) {
     announcement: a.number,
     operative: !within,
     suspended: within,
-    ...(a.neverOperated ? { neverOperated: a.neverOperated } : {}),
+    ...(neverOperated ? { neverOperated } : {}),
     suspensionInstrument: SUSPENSION.instrument,
     suspendedFrom: SUSPENSION.from,
     suspendedUntil: SUSPENSION.until,
@@ -175,6 +185,11 @@ export function assessChinaExportControls(input = {}) {
   // --- No. 18: in force, and not covered by the suspension ----------------
   const st18 = measureStatusOn("2025-18", asOfDate);
   const namedElements = findRareEarths({ rareEarthElements, itemDescription });
+  const controlledForms = namedElements.map((element) => ({
+    element,
+    forms: CONTROLLED_RARE_EARTHS_IN_FORCE.formsByElement?.[element] ?? CONTROLLED_RARE_EARTHS_IN_FORCE.itemForms
+  }));
+  const formNames = [...new Set(controlledForms.flatMap((x) => x.forms))];
   if (namedElements.length) {
     findings.push({
       id: "no18-elements",
@@ -182,8 +197,11 @@ export function assessChinaExportControls(input = {}) {
       measureDate: ANNOUNCEMENT_BY_ID["2025-18"].date,
       status: st18.operative ? "license_required" : "license_required_if_reactivated",
       elements: namedElements,
+      controlledForms,
       requirement:
-        "An export licence is required for the named elements in the forms the announcement lists: metals, compounds, oxides, alloys, sputtering target materials and permanent magnet materials.",
+        "An export licence is required for the named elements in the forms listed for those elements, including " +
+        formNames.join(", ") +
+        ". The exact form and code still require confirmation against the announcement.",
       measureStatus: st18,
       important:
         "This announcement was NOT suspended in November 2025. Reporting that 'China suspended its rare-earth controls' is wrong for these seven elements.",
@@ -201,9 +219,11 @@ export function assessChinaExportControls(input = {}) {
 
   // --- No. 61: extraterritorial reach ------------------------------------
   const st61 = measureStatusOn("2025-61", asOfDate);
+  const st61EndUser = measureStatusOn("2025-61", asOfDate, "end-user");
   const routeResults = [];
 
   for (const route of EXTRATERRITORIAL_ROUTES) {
+    const routeStatus = measureStatusOn("2025-61", asOfDate, route.id);
     let met = "unknown";
     let basis = "";
 
@@ -252,25 +272,48 @@ export function assessChinaExportControls(input = {}) {
       }
     }
 
-    routeResults.push({ ...route, met, basis });
+    routeResults.push({ ...route, met, basis, measureStatus: routeStatus });
   }
 
   const routesMet = routeResults.filter((r) => r.met === "yes");
   const routesUnknown = routeResults.filter((r) => r.met === "unknown");
+  const routesMetOperative = routesMet.filter((r) => r.measureStatus.operative);
+  const routesMetSuspended = routesMet.filter((r) => r.measureStatus.suspended);
 
   if (routesMet.length) {
+    const routeStatus =
+      routesMetOperative.length > 0
+        ? "license_required"
+        : routesMetSuspended.length > 0
+          ? "license_required_if_reactivated"
+          : "requires_verification";
     findings.push({
       id: "no61-extraterritorial",
       measure: ANNOUNCEMENT_BY_ID["2025-61"].number,
       measureDate: ANNOUNCEMENT_BY_ID["2025-61"].date,
-      status: st61.operative ? "license_required" : "license_required_if_reactivated",
+      status: routeStatus,
       routesMet: routesMet.map((r) => ({ limb: r.limb, test: r.test, basis: r.basis })),
       requirement:
         "A MOFCOM dual-use item export permit is required before export, including where both the origin and the destination of the shipment are outside China.",
       measureStatus: st61,
+      routeStatuses: Object.fromEntries(
+        routesMet.map((r) => [
+          r.id,
+          {
+            state: r.measureStatus.notYetEffective
+              ? "not_yet_effective"
+              : r.measureStatus.suspended
+                ? "suspended"
+                : r.measureStatus.operative
+                  ? "in_force"
+                  : "not_operative",
+            ...(r.measureStatus.neverOperated ? { neverOperated: r.measureStatus.neverOperated } : {})
+          }
+        ])
+      ),
       earContrast: routesMet.map((r) => r.earContrast).filter(Boolean),
       itemListCaveat:
-        "This tool cannot confirm the item appears on Announcement No. 61's own appendix. The route test above is met on the facts given; the item-scope question is unresolved because the appendix is not bundled."
+        "This tool cannot confirm the item appears on Announcement No. 61's own appendix. The route test above is met on the facts given; the item-scope question is unresolved because the appendix is not bundled. A route that was not yet effective is reported as requires_verification rather than as a live or revived licence requirement."
     });
   }
   if (routesUnknown.length && !routesMet.length) {
@@ -293,21 +336,21 @@ export function assessChinaExportControls(input = {}) {
     findings.push({
       id: "no61-military-end-user",
       measure: ANNOUNCEMENT_BY_ID["2025-61"].number,
-      status: st61.operative ? "license_required" : "license_required_if_reactivated",
+      status: st61EndUser.operative ? "license_required" : st61EndUser.suspended ? "license_required_if_reactivated" : "requires_verification",
       rule: NO61_END_USER_RULE.rule,
       effect:
         "An application for a military end user is in principle not permitted. Treat this as a prohibition to be rebutted, not a licence to be applied for.",
-      measureStatus: st61
+      measureStatus: st61EndUser
     });
   }
   if (counterpartyIsSubsidiaryOfListedEntity === true) {
     findings.push({
       id: "no61-affiliates",
       measure: ANNOUNCEMENT_BY_ID["2025-61"].number,
-      status: st61.operative ? "license_required" : "license_required_if_reactivated",
+      status: st61EndUser.operative ? "license_required" : st61EndUser.suspended ? "license_required_if_reactivated" : "requires_verification",
       rule: NO61_END_USER_RULE.affiliatesRule,
       earAnalogue: NO61_END_USER_RULE.earAnalogue,
-      measureStatus: st61
+      measureStatus: st61EndUser
     });
   }
 
@@ -388,7 +431,56 @@ export function assessChinaExportControls(input = {}) {
       subject: ANNOUNCEMENT_BY_ID["2025-62"].subject,
       measureStatus: st62,
       note:
-        "The controlled act is transfer of know-how, including design drawings, process specifications, parameters, procedures and simulation data. Intangible transfer to a foreign colleague or a shared engineering system can be the export."
+      "The controlled act is transfer of know-how, including design drawings, process specifications, parameters, procedures and simulation data. Intangible transfer to a foreign colleague or a shared engineering system can be the export."
+    });
+  }
+  const categoryPointers = [
+    {
+      categories: ["strategic_mineral"],
+      announcementId: "2025-10",
+      id: "no10-strategic-minerals",
+      note:
+        "The item category points to Announcement No. 10's strategic-mineral controls. This tool does not classify the item against the announcement's detailed codes or parameters, so confirm whether the specific tungsten, tellurium, bismuth, molybdenum or indium item is listed."
+    },
+    {
+      categories: ["superhard_material"],
+      announcementId: "2025-55",
+      id: "no55-superhard-material",
+      note:
+        "The category points to the artificial-diamond and DCPCVD controls in Announcement No. 55. Confirm the particle size, product parameters and technology/equipment code against the announcement."
+    },
+    {
+      categories: ["rare_earth_equipment"],
+      announcementId: "2025-56",
+      id: "no56-rare-earth-equipment",
+      note:
+        "The category points to Announcement No. 56's 2B902 rare-earth production and processing equipment and raw-material controls. This tool does not classify the equipment against the detailed parameters."
+    },
+    {
+      categories: ["rare_earth"],
+      announcementId: "2025-57",
+      id: "no57-rare-earth-package",
+      note:
+        "The category also requires checking Announcement No. 57 for holmium, erbium, thulium, europium and ytterbium items. It is separate from No. 18 and is currently suspended until the recorded expiry."
+    }
+  ];
+  for (const pointer of categoryPointers) {
+    if (!pointer.categories.includes(itemCategory)) continue;
+    const announcement = ANNOUNCEMENT_BY_ID[pointer.announcementId];
+    const state = measureStatusOn(pointer.announcementId, asOfDate);
+    findings.push({
+      id: pointer.id,
+      measure: announcement.number,
+      measureDate: announcement.date,
+      status: state.operative
+        ? "requires_verification"
+        : state.suspended
+          ? "license_required_if_reactivated"
+          : "requires_verification",
+      subject: announcement.subject,
+      controlledCodes: announcement.controlledCodes,
+      measureStatus: state,
+      note: pointer.note
     });
   }
 
@@ -461,6 +553,14 @@ export function assessChinaExportControls(input = {}) {
       test: r.test,
       met: r.met,
       basis: r.basis,
+      state: r.measureStatus.notYetEffective
+        ? "not_yet_effective"
+        : r.measureStatus.suspended
+          ? "suspended"
+          : r.measureStatus.operative
+            ? "in_force"
+            : "not_operative",
+      ...(r.measureStatus.neverOperated ? { neverOperated: r.measureStatus.neverOperated } : {}),
       ...(r.earAnalogue ? { earAnalogue: r.earAnalogue, earContrast: r.earContrast } : {})
     })),
     entityScreening: screening,

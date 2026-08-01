@@ -92,7 +92,7 @@ const byId = (r, id) => r.findings.find((f) => f.id === id);
     ["2026-11-11", { operative: true, notYetEffective: undefined, suspended: false }]
   ];
   cases.forEach(([d, want], i) => {
-    const s = measureStatusOn("2025-61", d);
+    const s = measureStatusOn("2025-61", d, "content-floor");
     const ok =
       s.operative === want.operative &&
       Boolean(s.suspended) === Boolean(want.suspended) &&
@@ -135,6 +135,15 @@ const byId = (r, id) => r.findings.find((f) => f.id === id);
     "A9",
     nd.inputGaps.some((g) => g.field === "rareEarthElements"),
     "a rare-earth item with no controlled element must raise a gap, not go quiet"
+  );
+
+  const lu = ask({ rareEarthElements: ["lutetium"] });
+  const luFinding = byId(lu, "no18-elements");
+  t("A10", Boolean(luFinding), "lutetium still points to No. 18");
+  t(
+    "A11",
+    !luFinding.controlledForms.find((x) => x.element === "lutetium").forms.includes("permanent magnet materials"),
+    "lutetium must not inherit the permanent-magnet category from other elements"
   );
 }
 
@@ -201,19 +210,19 @@ const byId = (r, id) => r.findings.find((f) => f.id === id);
   // sits after the announcement was published.
   const inside = ask({ asOfDate: "2025-12-15", itemOriginChina: true });
   t("R8", byId(inside, "no61-extraterritorial").status === "license_required_if_reactivated", byId(inside, "no61-extraterritorial").status);
-  const preCommencement = measureStatusOn("2025-61", "2025-10-20");
+  const preCommencement = measureStatusOn("2025-61", "2025-10-20", "content-floor");
   t("R9", preCommencement.notYetEffective === true, JSON.stringify(preCommencement));
   t("R10", preCommencement.operative === false, "published is not the same as operative");
   t(
     "R11",
-    /never been operative/i.test(preCommencement.neverOperated ?? ""),
-    "the record must state that these limbs never operated"
-  );
+    /never operated/i.test(preCommencement.neverOperated ?? ""),
+   "the record must state that these limbs never operated"
+ );
   t(
     "R12",
-    /no enforcement history/i.test(ANNOUNCEMENT_BY_ID["2025-61"].neverOperated),
-    "and must say why that is a reason to plan for it rather than discount it"
-  );
+    /absence of enforcement history|no enforcement history/i.test(ANNOUNCEMENT_BY_ID["2025-61"].neverOperated),
+   "and must say why that is a reason to plan for it rather than discount it"
+ );
 }
 
 // =========================================================================
@@ -303,13 +312,29 @@ const byId = (r, id) => r.findings.find((f) => f.id === id);
     /intangible transfer|Intangible transfer/.test(byId(tech, "no62-technology").note),
     "the technology finding must warn about intangible transfer"
   );
+
+  const superhard = ask({ itemCategory: "superhard_material" });
+  t("C5", ids(superhard).includes("no55-superhard-material"), ids(superhard).join(","));
+  t("C6", byId(superhard, "no55-superhard-material").status === "license_required_if_reactivated", byId(superhard, "no55-superhard-material").status);
+  const equipment = ask({ itemCategory: "rare_earth_equipment" });
+  t("C7", ids(equipment).includes("no56-rare-earth-equipment"), ids(equipment).join(","));
+  const strategic = ask({ itemCategory: "strategic_mineral" });
+  t("C8", byId(strategic, "no10-strategic-minerals").status === "requires_verification", byId(strategic, "no10-strategic-minerals").status);
+  const no10 = ANNOUNCEMENT_BY_ID["2025-10"].controlledCodes;
+  t("C9", no10.includes("6C001.a") && no10.includes("6E002") && no10.includes("3E004"), no10.join(","));
+  const no56 = ANNOUNCEMENT_BY_ID["2025-56"].controlledCodes;
+  t("C10", no56.includes("2B902") && no56.includes("1C914"), no56.join(","));
+  const no58 = ANNOUNCEMENT_BY_ID["2025-58"].controlledCodes;
+  t("C11", no58.includes("3A001") && no58.includes("3C902.b.2") && no58.includes("3E901.b"), no58.join(","));
+  const no62 = ANNOUNCEMENT_BY_ID["2025-62"].controlledCodes;
+  t("C12", no62.join(",") === "1E902.a,1E902.b", no62.join(","));
 }
 
 // =========================================================================
 // Nothing may report as clear
 // =========================================================================
 {
-  const empty = ask({});
+  const empty = ask({ asOfDate: "2026-07-31" });
   t("N1", CHINA_STATUSES.includes(empty.status), empty.status);
   t("N2", empty.status !== "no_requirement" && empty.status !== "clear", empty.status);
   t(
@@ -332,6 +357,7 @@ const byId = (r, id) => r.findings.find((f) => f.id === id);
   const reg18 = empty.announcementRegister.find((a) => a.number === "No. 18 of 2025");
   t("N9", reg18.state === "in_force" && reg18.notSuspended === true, `${reg18.state} notSuspended=${reg18.notSuspended}`);
   t("N10", Boolean(ANNOUNCEMENT_BY_ID["2026-30"]), "the July 2026 EU designation announcement is recorded");
+  t("N10b", Boolean(ANNOUNCEMENT_BY_ID["2026-23"]), "the June 2026 U.S. designation announcement is recorded");
 
   // The constant reference material moved to a resource; the pointer must remain
   // so a reader can still find what is not modelled.

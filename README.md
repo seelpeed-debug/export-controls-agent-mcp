@@ -17,7 +17,7 @@ The line between what is modelled from the regulation text and what is merely fl
 | End-use / end-user | Part 744, including the 50 percent affiliates rule |
 | Commerce Control List | Part 774 Supplement No. 1, text search over all 633 entries |
 | Restricted parties | U.S. Consolidated Screening List, 25,921 parties across 12 lists |
-| PRC (MOFCOM) | Instrument and numbered-announcement register with live in-force or suspended status, Announcement No. 18 of 2025 rare earths, and the Announcement No. 61 of 2025 extraterritorial reach |
+| PRC (MOFCOM) | Dated instrument and numbered-announcement register, current strategic-mineral/rare-earth packages, the November 2025 suspension, No. 61 extraterritorial reach, and current 2026 designation records |
 | Korean statutes | 대외무역법 and 국제사법, full current article text |
 
 **Not modelled** — the server holds no data and performs no analysis; it only raises these as issues to check:
@@ -181,7 +181,7 @@ This regime differs from the EAR in three ways that shape the tool.
 
 **The operative question is usually whether a measure is in force, not what it says.** Announcements Nos. 55, 56, 57, 58, 61 and 62 of 2025 are suspended by Announcement No. 70 of 2025 until **10 November 2026**. Announcement No. 18 of 2025, covering seven medium and heavy rare earths, is **not** suspended and still requires a licence. So status is computed against a date, and a fact pattern that meets a suspended test returns `license_required_if_reactivated` with the expiry, because the instruments are not repealed. Suspension is not an exemption. Pass `asOfDate` to test a future date.
 
-A detail worth knowing: the suspension took effect on 7 November 2025, one day before Announcement No. 61's own commencement date and three weeks before its extraterritorial provisions were due. Those limbs have never operated, so there is no enforcement history to reason from — only the text that will apply on revival.
+A detail worth knowing: No. 61 § 1(c), covering Chinese-origin listed items, took effect on publication on 9 October 2025. Its content and technology limbs (§ 1(a) and § 1(b)) were due on 1 December 2025, but the suspension began on 7 November. The delayed limbs therefore never operated; the Chinese-origin limb operated briefly before the suspension. The delayed text still matters on revival.
 
 **It binds non-Chinese parties directly.** Announcement No. 61 requires a MOFCOM permit for a shipment where both ends are outside China, and a 管控名单 designation prohibits parties in *any* country from supplying the listed entity with Chinese-origin dual-use items. A Korean exporter with no Chinese entity and no U.S. nexus can be squarely inside this regime.
 
@@ -194,7 +194,7 @@ A detail worth knowing: the suspension took effect on 7 November 2025, one day b
 
 Clearing U.S. de minimis at 20 percent says nothing about this test. The tool refuses to carry a conclusion across.
 
-Announcement No. 61's other limbs mirror provisions you will recognise: § 1(b) is a Foreign Direct Product analogue reached from the other direction, catching items produced abroad using Chinese rare-earth extraction, smelting separation, metal smelting, magnetic material manufacturing or recycling technology, with no percentage test. § 2 carries a 50 percent affiliates rule and makes applications for military end users impermissible in principle.
+Announcement No. 61's other limbs mirror provisions you will recognise: § 1(b) is a Foreign Direct Product analogue reached from the other direction, catching items produced abroad using Chinese rare-earth extraction, smelting separation, metal smelting, magnetic material manufacturing or recycling technology, with no percentage test. § 2 carries a 50 percent affiliates rule and makes applications for military end users impermissible in principle. The register also records the 2025 strategic-mineral package and the 2026 Japan, U.S. and EU measures, but the item list and complete designation lists remain unbundled.
 
 The tool does **not** classify items and does **not** screen entities, because neither list is bundled. Every answer says so.
 

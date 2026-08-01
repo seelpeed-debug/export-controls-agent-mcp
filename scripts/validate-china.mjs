@@ -98,6 +98,10 @@ console.log("2. internal consistency");
     idsSeen.add(a.id);
     if (!a.number) bad(`announcement "${a.id}" has no number`);
     if (!a.date) bad(`announcement "${a.id}" has no date`);
+    if (a.effectiveFrom && !/^\d{4}-\d{2}-\d{2}$/.test(a.effectiveFrom))
+      bad(`announcement "${a.id}" has an invalid effectiveFrom "${a.effectiveFrom}"`);
+    if (a.source && !/^https:\/\//.test(a.source))
+      bad(`announcement "${a.id}" does not carry an HTTPS source URL`);
     if (a.suspendedBy && !ANNOUNCEMENT_BY_ID[a.suspendedBy])
       bad(`"${a.id}" is suspendedBy "${a.suspendedBy}", which is not an announcement in this dataset`);
   }
@@ -140,6 +144,19 @@ console.log("2. internal consistency");
   if (!ANNOUNCEMENT_BY_ID[CONTROLLED_RARE_EARTHS_IN_FORCE.source])
     bad(`the controlled-element list cites source "${CONTROLLED_RARE_EARTHS_IN_FORCE.source}", which is not in the register`);
   else ok(`controlled elements sourced to ${ANNOUNCEMENT_BY_ID[CONTROLLED_RARE_EARTHS_IN_FORCE.source].number}`);
+
+  const no61 = ANNOUNCEMENT_BY_ID["2025-61"];
+  const expectedLimbDates = {
+    "content-floor": "2025-12-01",
+    "technology-route": "2025-12-01",
+    "chinese-origin": "2025-10-09",
+    "end-user": "2025-10-09"
+  };
+  for (const [limb, expected] of Object.entries(expectedLimbDates)) {
+    if (no61.limbEffectiveFrom?.[limb] !== expected)
+      bad(`No. 61 ${limb} starts ${no61.limbEffectiveFrom?.[limb]}, expected ${expected}`);
+  }
+  ok("No. 61 limb commencement dates are recorded separately");
 }
 
 // -------------------------------------------------------------------------
@@ -223,10 +240,20 @@ console.log("4. the in-force measure still reports as in force");
     bad(`a controlled element returns "${r.status}", expected "license_required"`);
   else ok("a controlled element still produces a live licence requirement");
 
-  const s61 = measureStatusOn("2025-61", today);
+  const s61 = measureStatusOn("2025-61", today, "content-floor");
   if (s61.suspended !== true && days(today, SUSPENSION.until) > 0)
     bad("Announcement No. 61 should report as suspended while the window is open");
   else ok(`Announcement No. 61 reports suspended=${s61.suspended} on ${today}`);
+
+  const originBeforePause = measureStatusOn("2025-61", "2025-10-20", "chinese-origin");
+  if (!originBeforePause.operative)
+    bad("No. 61 § 1(c) should have been operative from publication on 2025-10-09");
+  else ok("No. 61 § 1(c) is operative before the November suspension");
+
+  const delayedBeforeStart = measureStatusOn("2025-61", "2025-10-20", "content-floor");
+  if (!delayedBeforeStart.notYetEffective)
+    bad("No. 61 § 1(a) should not be operative before 2025-12-01");
+  else ok("No. 61 § 1(a)/(b) delayed limbs are not operative before 2025-12-01");
 }
 
 // -------------------------------------------------------------------------

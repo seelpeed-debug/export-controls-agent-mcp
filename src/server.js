@@ -207,8 +207,8 @@ server.registerTool(
         coverageInThisServer: "partial",
         modelledParts: [
           "The instrument register: Export Control Law (2020-12-01), Regulations on Export Control of Dual-Use Items (2024-12-01), Unreliable Entity List Provisions, Blocking Rules, Anti-Foreign Sanctions Law, State Council Decree No. 835 (2026)",
-          "The numbered announcement register with live in-force or suspended status computed against a date, including the Announcement No. 70 of 2025 suspension of Nos. 55, 56, 57, 58, 61 and 62 until 2026-11-10",
-          "Announcement No. 18 of 2025, which is NOT suspended: seven medium and heavy rare earths in the listed forms",
+          "The numbered announcement register with live in-force or suspended status computed against a date, including No. 10 strategic minerals, the No. 70 of 2025 suspension of Nos. 55, 56, 57, 58, 61 and 62 until 2026-11-10, and current 2026 Japan, U.S. and EU measures",
+          "Announcement No. 18 of 2025, which is NOT suspended: seven medium and heavy rare earths with element-specific listed forms and codes",
           "Announcement No. 61 of 2025 extraterritorial reach: the 0.1 percent Chinese-origin content floor, the Chinese-technology production route, Chinese origin, the military end-user prohibition and the 50 percent affiliates rule (assess_china_export_controls)"
         ],
         notModelledParts: [
@@ -526,7 +526,7 @@ server.registerTool(
   {
     title: "Assess PRC export controls (MOFCOM)",
     description:
-      "Identify Chinese export-control exposure under the Export Control Law, the 2024 Regulations on Export Control of Dual-Use Items, and the numbered MOFCOM announcements. Answers the question that decides most cases in this regime first: is the measure currently in force? Announcements Nos. 55, 56, 57, 58, 61 and 62 of 2025 are suspended by Announcement No. 70 of 2025 until 10 November 2026, while Announcement No. 18 of 2025 on seven medium and heavy rare earths is NOT suspended and still requires a licence. A fact pattern that meets a suspended test is reported as license_required_if_reactivated with the expiry date, because the instruments are not repealed. This regime binds non-Chinese parties directly: Announcement No. 61 requires a MOFCOM permit for a shipment between two points both outside China, on a 0.1 percent content floor, and a 管控名单 designation prohibits parties in ANY country from supplying the listed entity with Chinese-origin dual-use items. Do not carry a U.S. de minimis conclusion across; § 734.4 is a 25 or 10 percent ceiling you fall below to escape, while No. 61 is a 0.1 percent floor you rise above to be caught. This tool does NOT classify items and does NOT screen entities, because neither the Export Control List for Dual-Use Items nor any designation list is bundled.",
+      "Identify Chinese export-control exposure under the Export Control Law, the 2024 Regulations on Export Control of Dual-Use Items, and the numbered MOFCOM announcements. Answers the question that decides most cases in this regime first: is the measure currently in force? Announcements Nos. 55, 56, 57, 58, 61 and 62 of 2025 are suspended by Announcement No. 70 of 2025 until 10 November 2026, while Announcement No. 18 of 2025 on seven medium and heavy rare earths is NOT suspended and still requires a licence. No. 61 has split commencement dates: its Chinese-origin limb began on 9 October 2025, while its content and technology limbs were due on 1 December 2025. A fact pattern that meets a suspended test is reported as license_required_if_reactivated with the expiry date, because the instruments are not repealed. This regime binds non-Chinese parties directly: Announcement No. 61 requires a MOFCOM permit for a shipment between two points both outside China, on a 0.1 percent content floor, and a 管控名单 designation prohibits parties in ANY country from supplying the listed entity with Chinese-origin dual-use items. Do not carry a U.S. de minimis conclusion across; § 734.4 is a 25 or 10 percent ceiling you fall below to escape, while No. 61 is a 0.1 percent floor you rise above to be caught. This tool does NOT classify items and does NOT screen entities, because neither the Export Control List for Dual-Use Items nor any designation list is bundled.",
     inputSchema: {
       asOfDate: z
         .string()
@@ -537,7 +537,17 @@ server.registerTool(
         .optional()
         .describe("Free-text item description. Scanned for the controlled rare-earth elements, in English or Chinese."),
       itemCategory: z
-        .enum(["rare_earth", "rare_earth_technology", "lithium_battery", "graphite_anode", "other", "unknown"])
+        .enum([
+          "rare_earth",
+          "rare_earth_technology",
+          "rare_earth_equipment",
+          "lithium_battery",
+          "graphite_anode",
+          "strategic_mineral",
+          "superhard_material",
+          "other",
+          "unknown"
+        ])
         .default("unknown"),
       rareEarthElements: z
         .array(z.string())

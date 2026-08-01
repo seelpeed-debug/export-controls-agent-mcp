@@ -292,6 +292,32 @@ export function searchCcl(terms, { categories = null, maxEntries = 12, maxMatche
     const rank = (m) => ({ item: 0, heading: 1, note: 2, scope_text: 3 })[m.scope] ?? 4;
     matches.sort((a, b) => rank(a) - rank(b) || (a.depth ?? 0) - (b.depth ?? 0));
 
+    // Two search terms hitting the same paragraph produced two records quoting
+    // that paragraph in full. On 3B993 that was six records for three distinct
+    // paragraphs, and the quoted CCL text is what makes these records large. Merge
+    // them and list the terms instead: the same information, quoted once. The
+    // merge happens before the cap, so it also lets more DISTINCT paragraphs
+    // through the same budget.
+    const merged = [];
+    const seenText = new Map();
+    for (const m of matches) {
+      const key = `${m.scope}|${m.paragraph ?? ""}|${m.text}`;
+      const prior = seenText.get(key);
+      if (prior) {
+        if (!prior.terms.includes(m.term)) prior.terms.push(m.term);
+        continue;
+      }
+      const rec = {
+        paragraph: m.paragraph,
+        scope: m.scope,
+        ...(m.depth === undefined ? {} : { depth: m.depth }),
+        terms: [m.term],
+        text: m.text
+      };
+      seenText.set(key, rec);
+      merged.push(rec);
+    }
+
     results.push({
       eccn: rec.entry.eccn,
       category: rec.entry.category,
@@ -304,12 +330,48 @@ export function searchCcl(terms, { categories = null, maxEntries = 12, maxMatche
       matchedTerms: [...matchedTerms],
       matchScore: matchedTerms.size,
       matchCount: matches.length,
-      matches: matches.slice(0, maxMatchesPerEntry)
+      distinctPassages: merged.length,
+      allPassages: merged
     });
   }
 
   results.sort((a, b) => b.matchScore - a.matchScore || a.eccn.localeCompare(b.eccn));
-  return { results: results.slice(0, maxEntries), totalEntriesMatched: results.length };
+
+  // Quote in proportion to rank. Every candidate that matched is still listed
+  // with its score and passage count, but a twelfth-ranked candidate does not
+  // need six paragraphs of the CCL quoted to show why it surfaced, and quoting
+  // six for all twelve put 25 KB of regulation text in one answer. What is not
+  // quoted is counted, so nothing is hidden.
+  const quotaFor = (rankIndex) => {
+    if (rankIndex < 3) return maxMatchesPerEntry;
+    if (rankIndex < 6) return 3;
+    return 1;
+  };
+
+  const shaped = results.slice(0, maxEntries).map((r, i) => {
+    const quota = quotaFor(i);
+    const { allPassages, ...rest } = r;
+    const notShown = allPassages.length - quota;
+    return {
+      ...rest,
+      matches: allPassages.slice(0, quota),
+      ...(notShown > 0
+        ? {
+            passagesNotShown: notShown,
+            passagesNotShownNote: `${notShown} further matching passage(s) in this entry are not quoted here, because this candidate ranked ${i + 1} of ${Math.min(results.length, maxEntries)}. Read the entry, or search again with narrower terms to raise it.`
+          }
+        : {})
+    };
+  });
+
+  return {
+    results: shaped,
+    totalEntriesMatched: results.length,
+    quotingPolicy:
+      "Passages are quoted in proportion to rank: up to " +
+      `${maxMatchesPerEntry} for the top 3 candidates, 3 for ranks 4 to 6, and 1 beyond that. ` +
+      "distinctPassages and passagesNotShown give the totals for every candidate, so a low-ranked candidate is under-quoted rather than under-reported."
+  };
 }
 
 /**
